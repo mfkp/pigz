@@ -94,6 +94,10 @@ scoreLabel.x = screenW - 30
 scoreLabel.y = 20
 scoreLabel:setFillColor( 0 )
 
+local flapSound = audio.loadSound( "assets/sounds/flap.mp3" )
+-- local boingSound = audio.loadSound( "assets/sounds/boing.mp3" )
+local oinkSound = audio.loadSound( "assets/sounds/oink.mp3" )
+
 -----------------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 -- 
@@ -266,6 +270,7 @@ function scene:enterScene( event )
 				storyboard.gotoScene( "view2" )
 			end
 			pigGroup:setLinearVelocity( 0, PIG_UPWARD_VELOCITY )
+			audio.play( flapSound )
 		end
 		return true  --prevents touch propagation to underlying objects
 	end
@@ -275,6 +280,7 @@ function scene:enterScene( event )
 			
 			if ( not gameOver ) then
 				gameOver = true
+				audio.play( oinkSound )
 				-- swap out live pig for dead pig
 				deadPig.isVisible = true
 				pig.isVisible = false
