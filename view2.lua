@@ -12,8 +12,6 @@ physics.setScale( 90 )
 -- physics.setDrawMode( "hybrid" )
 physics.start()
 physics.setGravity( 0, 15 )
--- local PIG_SPEED = 10
--- local GRAVITY = PIG_SPEED / 10
 local PIG_UPWARD_VELOCITY = -400
 local ROTATION_RATIO = PIG_UPWARD_VELOCITY / -45
 local FENCE_SPEED = 1
@@ -23,18 +21,25 @@ local gameOver = false
 
 local currentScore = 0
 
--- local speed, velocity = -PIG_SPEED, 0
 local screenW, screenH = display.contentWidth, display.contentHeight
 
 local pigOptions = {
-    width = 64,
+    width = 65,
     height = 44,
     numFrames = 4
 }
 local pigSheet = graphics.newImageSheet( "assets/pigs.png", pigOptions )
 local pigSpriteOptions = { name="pig", start=1, count=4, time=250 }
-local pig = display.newSprite( pigSheet, pigSpriteOptions )
+
+-- Create a basic display group
+local pigGroup = display.newGroup()
+local deadPig = display.newImage( pigGroup, "assets/dead.png" )
+-- physics.addBody( deadPig, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
+local pig = display.newSprite( pigGroup, pigSheet, pigSpriteOptions )
 pig:play()
+deadPig.isVisible = false
+pigGroup.whichPig = "alive"
+
 local origX = screenW / 4
 local origY = screenH / 2
 
@@ -75,7 +80,7 @@ physics.addBody( pitchforkDown, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pitchforkUp, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pitchforkDown2, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pitchforkUp2, "static", { friction=1, bounce=0.6 } )
-physics.addBody( pig, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
+physics.addBody( pigGroup, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
 
 local fence1, fence2, fence3, clouds1, clouds2, clouds3
 
@@ -238,11 +243,11 @@ function scene:enterScene( event )
 			clouds2.y = math.random( 50, 250 )
 		end
 
-		local vx, vy = pig:getLinearVelocity()
-		pig.rotation = math.min( vy / ROTATION_RATIO, 90 )
-		-- pig.x = origX
-		if (pig.y < 0) then
-			pig.y = 0
+		local vx, vy = pigGroup:getLinearVelocity()
+		pigGroup.rotation = math.min( vy / ROTATION_RATIO, 90 )
+
+		if (pigGroup.y < 0) then
+			pigGroup.y = 0
 		end
 		
 	end
@@ -256,29 +261,36 @@ function scene:enterScene( event )
 				myText:setFillColor( 0, 0 )
 				currentScore = 0
 				scoreLabel.text = currentScore
+				deadPig.isVisible = false
+				pig.isVisible = true
 				storyboard.gotoScene( "view2" )
 			end
-			pig:setLinearVelocity( 0, PIG_UPWARD_VELOCITY )
+			pigGroup:setLinearVelocity( 0, PIG_UPWARD_VELOCITY )
 		end
 		return true  --prevents touch propagation to underlying objects
 	end
 
 	local function onPigCollision( self, event )
 		if ( event.phase == "began" ) then
+			
+			if ( not gameOver ) then
+				gameOver = true
+				-- swap out live pig for dead pig
+				deadPig.isVisible = true
+				pig.isVisible = false
+			end
+
 			-- game over!
 			myText:setFillColor( 0, 1 )
 			Runtime:removeEventListener( "enterFrame", moveThePig )
-			gameOver = true
 		end
 	end
 
-	pig.collision = onPigCollision
-	pig:addEventListener( "collision", pig )
-	pitchforkUp.collision = onPigCollision
-	pitchforkUp:addEventListener( "collision", pitchforkUp )
+	pigGroup.collision = onPigCollision
+	pigGroup:addEventListener( "collision", pigGroup )
 
-	pig.x = origX
-	pig.y = origY
+	pigGroup.x = origX
+	pigGroup.y = origY
 	Runtime:addEventListener( "enterFrame", moveThePig )
 
 	local screenButton = display.newRect( 0, 0, screenW, screenH )
