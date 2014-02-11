@@ -10,4 +10,4 @@ display.setStatusBar( display.HiddenStatusBar )
 local widget = require "widget"
 local storyboard = require "storyboard"
 
-storyboard.gotoScene( "view2" )
+storyboard.gotoScene( "view1" )

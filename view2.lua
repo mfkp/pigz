@@ -35,7 +35,6 @@ local pigSpriteOptions = { name="pig", start=1, count=4, time=250 }
 -- Create a basic display group
 local pigGroup = display.newGroup()
 local deadPig = display.newImage( pigGroup, "assets/dead.png" )
--- physics.addBody( deadPig, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
 local pig = display.newSprite( pigGroup, pigSheet, pigSpriteOptions )
 pig:play()
 deadPig.isVisible = false
@@ -96,8 +95,6 @@ local oinkSound = audio.loadSound( "assets/sounds/oink.mp3" )
 
 -- numbers sprite
 local options = { frames = require("numbers").frames }
-
--- The new sprite API
 local numbersSheet = graphics.newImageSheet( "assets/numbers.png", options )
 local spriteOptions = { name="numbers", start=1, count=10, time=1000 }
 local ones = display.newSprite( numbersSheet, spriteOptions )

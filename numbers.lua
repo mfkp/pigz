@@ -6,10 +6,6 @@ sheetData.frames = {
 		y = 0,
 		width = 26,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
 
 	{
@@ -17,10 +13,6 @@ sheetData.frames = {
 		y = 0,
 		width = 16,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
 
 	{
@@ -28,10 +20,6 @@ sheetData.frames = {
 		y = 0,
 		width = 26,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
 
 	{
@@ -39,10 +27,6 @@ sheetData.frames = {
 		y = 0,
 		width = 26,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
 
 	{
@@ -50,10 +34,6 @@ sheetData.frames = {
 		y = 0,
 		width = 26,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
 
 	{
@@ -61,10 +41,6 @@ sheetData.frames = {
 		y = 0,
 		width = 26,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
 
 	{
@@ -72,10 +48,6 @@ sheetData.frames = {
 		y = 0,
 		width = 26,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
 
 	{
@@ -83,10 +55,6 @@ sheetData.frames = {
 		y = 0,
 		width = 26,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
 
 	{
@@ -94,10 +62,6 @@ sheetData.frames = {
 		y = 0,
 		width = 26,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
 
 	{
@@ -105,13 +69,7 @@ sheetData.frames = {
 		y = 0,
 		width = 26,
 		height = 26,
-		-- sourceX = 0,
-		-- sourceY = 4,
-		-- sourceWidth = 227,
-		-- sourceHeight = 161,
 	},
-
-	
 }
 
 return sheetData
