@@ -13,7 +13,7 @@ physics.setScale( 90 )
 physics.start()
 physics.setGravity( 0, 15 )
 local PIG_UPWARD_VELOCITY = -400
-local ROTATION_RATIO = PIG_UPWARD_VELOCITY / -45
+local ROTATION_RATIO = PIG_UPWARD_VELOCITY / -20
 local FENCE_SPEED = 1
 local CLOUD_SPEED = 0.3
 local PITCHFORK_SPEED = 5
@@ -279,7 +279,7 @@ function scene:enterScene( event )
 		end
 
 		local vx, vy = pigGroup:getLinearVelocity()
-		pigGroup.rotation = math.min( vy / ROTATION_RATIO, 90 )
+		pigGroup.rotation = math.min( vy / ROTATION_RATIO - 10, 90 )
 
 		if (pigGroup.y < 0) then
 			pigGroup.y = 0
