@@ -17,6 +17,7 @@ local ROTATION_RATIO = PIG_UPWARD_VELOCITY / -45
 local FENCE_SPEED = 1
 local CLOUD_SPEED = 0.3
 local PITCHFORK_SPEED = 5
+local ONE_OFFSET = 10 -- pixels offset for the "one" number
 local gameOver = false
 
 local currentScore = 0
@@ -89,14 +90,29 @@ myText.x = screenW / 2
 myText.y = screenH / 2
 myText:setFillColor( 0, 0 )
 
-local scoreLabel = display.newText( "0", 0, 0, native.systemFont, 40 )
-scoreLabel.x = screenW - 30
-scoreLabel.y = 20
-scoreLabel:setFillColor( 0 )
-
 local flapSound = audio.loadSound( "assets/sounds/flap.mp3" )
 -- local boingSound = audio.loadSound( "assets/sounds/boing.mp3" )
 local oinkSound = audio.loadSound( "assets/sounds/oink.mp3" )
+
+-- numbers sprite
+local options = { frames = require("numbers").frames }
+
+-- The new sprite API
+local numbersSheet = graphics.newImageSheet( "assets/numbers.png", options )
+local spriteOptions = { name="numbers", start=1, count=10, time=1000 }
+local ones = display.newSprite( numbersSheet, spriteOptions )
+local tens = display.newSprite( numbersSheet, spriteOptions )
+local hundreds = display.newSprite( numbersSheet, spriteOptions )
+hundreds.anchorX, hundreds.anchorY, tens.anchorX, tens.anchorY, ones.anchorX, ones.anchorY = 0, 0, 0, 0, 0, 0
+tens.isVisible = false
+hundreds.isVisible = false
+ones.y, tens.y, hundreds.y = 5, 5, 5
+local onesPos = screenW - 26*1 - 5
+local tensPos = screenW - 26*2 - 5 - 1
+local hundredsPos =  screenW - 26*3 - 5 - 2
+hundreds.x = hundredsPos
+tens.x = tensPos
+ones.x = onesPos
 
 -----------------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
@@ -195,6 +211,21 @@ function scene:enterScene( event )
 		pitchforkUp2.y = pitchforkDown2.y + 620
 	end
 
+	local function setScore(score)
+		local secondsDigit = score % 10
+		local tensDigit = math.floor(score % 100 / 10)
+		local hundredsDigit = math.floor(score % 1000 / 100)
+		ones:setFrame( secondsDigit + 1 )
+		tens:setFrame( tensDigit + 1 )
+		hundreds:setFrame( hundredsDigit + 1 )
+		tens.isVisible = (score >= 10)
+		hundreds.isVisible = (score >= 100)
+		-- set positioning
+		tens.x = tensPos + ((tensDigit == 1) and ONE_OFFSET or 0)
+		hundreds.x = hundredsPos
+		hundreds.x = hundredsPos + ((hundredsDigit == 1) and ONE_OFFSET or 0) + ((tensDigit == 1) and ONE_OFFSET or 0)
+	end
+
 	local function moveThePig()
 		-- move pitchforks
 		pitchforkDown.x = pitchforkDown.x - PITCHFORK_SPEED
@@ -213,7 +244,7 @@ function scene:enterScene( event )
 		if ((pitchforkDown.x > origX-PITCHFORK_SPEED/2 and pitchforkDown.x <= origX+PITCHFORK_SPEED/2) or 
 			(pitchforkDown2.x > origX-PITCHFORK_SPEED/2 and pitchforkDown2.x <= origX+PITCHFORK_SPEED/2)) then
 			currentScore = currentScore + 1;
-			scoreLabel.text = currentScore
+			setScore(currentScore)
 		end
 
 		-- move fence
@@ -264,7 +295,7 @@ function scene:enterScene( event )
 				resetPitchforks2()
 				myText:setFillColor( 0, 0 )
 				currentScore = 0
-				scoreLabel.text = currentScore
+				setScore(currentScore)
 				deadPig.isVisible = false
 				pig.isVisible = true
 				storyboard.gotoScene( "view2" )
