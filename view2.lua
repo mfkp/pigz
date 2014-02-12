@@ -113,6 +113,39 @@ hundreds.x = hundredsPos
 tens.x = tensPos
 ones.x = onesPos
 
+local function writeScore(score)
+	local path = system.pathForFile( "highscore.txt", system.DocumentsDirectory )
+	local file = io.open (path, "w" )
+	if ( file ) then
+		local contents = score
+		file:write( contents )
+		io.close( file )
+		file = nil
+		return true
+	else
+		print( "Error: could not read file" )
+		return false
+	end
+end
+
+local function getScore()
+	local path = system.pathForFile( "highscore.txt", system.DocumentsDirectory )
+	local file = io.open( path, "r" )
+	if ( file ) then
+		-- read all contents of file into a string
+		local contents = file:read( "*a" )
+		local score = tonumber( contents );
+		io.close( file )
+		file = nil
+		return score
+	else
+		print( "Error: could not read scores from file." )
+		writeScore( currentScore )
+		return 0
+	end
+	return nil
+end
+
 -----------------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 -- 
@@ -324,6 +357,12 @@ function scene:enterScene( event )
 				-- swap out live pig for dead pig
 				deadPig.isVisible = true
 				pig.isVisible = false
+				-- check for high score, set it if high #420
+				local highScore = getScore()
+				if currentScore > highScore then
+					print("new high score " .. currentScore)
+					writeScore(currentScore)
+				end
 			end
 
 			-- game over!
