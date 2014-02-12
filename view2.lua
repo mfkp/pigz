@@ -104,10 +104,11 @@ local hundreds = display.newSprite( numbersSheet, spriteOptions )
 hundreds.anchorX, hundreds.anchorY, tens.anchorX, tens.anchorY, ones.anchorX, ones.anchorY = 0, 0, 0, 0, 0, 0
 tens.isVisible = false
 hundreds.isVisible = false
-ones.y, tens.y, hundreds.y = 5, 5, 5
-local onesPos = screenW - 26*1 - 5
-local tensPos = screenW - 26*2 - 5 - 1
-local hundredsPos =  screenW - 26*3 - 5 - 2
+ones.y, tens.y, hundreds.y = 20, 20, 20
+local NUMBER_WIDTH = 26
+local onesPos = screenW/2 - NUMBER_WIDTH*1 + NUMBER_WIDTH/2
+local tensPos = screenW/2 - NUMBER_WIDTH*2 + NUMBER_WIDTH/2
+local hundredsPos =  screenW/2 - NUMBER_WIDTH*3 + NUMBER_WIDTH/2
 hundreds.x = hundredsPos
 tens.x = tensPos
 ones.x = onesPos
@@ -219,9 +220,18 @@ function scene:enterScene( event )
 		tens.isVisible = (score >= 10)
 		hundreds.isVisible = (score >= 100)
 		-- set positioning
-		tens.x = tensPos + ((tensDigit == 1) and ONE_OFFSET or 0)
-		hundreds.x = hundredsPos
-		hundreds.x = hundredsPos + ((hundredsDigit == 1) and ONE_OFFSET or 0) + ((tensDigit == 1) and ONE_OFFSET or 0)
+		ones.x = 		onesPos + 
+						((score >= 10) and NUMBER_WIDTH/2 or 0) + 
+						((score >= 100) and NUMBER_WIDTH/2 or 0)
+		tens.x = 		tensPos + 
+						((tensDigit == 1) and ONE_OFFSET or 0) + 
+						((score >= 10) and NUMBER_WIDTH/2 or 0) + 
+						((score >= 100) and NUMBER_WIDTH/2 or 0)
+		hundreds.x = 	hundredsPos + 
+						((hundredsDigit == 1) and ONE_OFFSET or 0) + 
+						((tensDigit == 1) and ONE_OFFSET or 0) + 
+						((score >= 10) and NUMBER_WIDTH/2 or 0) + 
+						((score >= 100) and NUMBER_WIDTH/2 or 0)
 	end
 
 	local function moveThePig()
@@ -241,7 +251,7 @@ function scene:enterScene( event )
 		-- check for +1 score
 		if ((pitchforkDown.x > origX-PITCHFORK_SPEED/2 and pitchforkDown.x <= origX+PITCHFORK_SPEED/2) or 
 			(pitchforkDown2.x > origX-PITCHFORK_SPEED/2 and pitchforkDown2.x <= origX+PITCHFORK_SPEED/2)) then
-			currentScore = currentScore + 1;
+			currentScore = currentScore + 1
 			setScore(currentScore)
 			audio.play( coinSound )
 		end
