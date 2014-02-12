@@ -92,6 +92,7 @@ myText:setFillColor( 0, 0 )
 local flapSound = audio.loadSound( "assets/sounds/flap.mp3" )
 -- local boingSound = audio.loadSound( "assets/sounds/boing.mp3" )
 local oinkSound = audio.loadSound( "assets/sounds/oink.mp3" )
+local coinSound = audio.loadSound( "assets/sounds/coin.mp3" )
 
 -- numbers sprite
 local options = { frames = require("numbers").frames }
@@ -242,6 +243,7 @@ function scene:enterScene( event )
 			(pitchforkDown2.x > origX-PITCHFORK_SPEED/2 and pitchforkDown2.x <= origX+PITCHFORK_SPEED/2)) then
 			currentScore = currentScore + 1;
 			setScore(currentScore)
+			audio.play( coinSound )
 		end
 
 		-- move fence
