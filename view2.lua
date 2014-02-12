@@ -84,11 +84,6 @@ physics.addBody( pigGroup, "dynamic", { radius=20, density=1.0, friction=1, boun
 
 local fence1, fence2, fence3, clouds1, clouds2, clouds3
 
-local myText = display.newText( "UR DEAD", 0, 0, native.systemFont, 40 )
-myText.x = screenW / 2
-myText.y = screenH / 2
-myText:setFillColor( 0, 0 )
-
 local flapSound = audio.loadSound( "assets/sounds/flap.mp3" )
 -- local boingSound = audio.loadSound( "assets/sounds/boing.mp3" )
 local oinkSound = audio.loadSound( "assets/sounds/oink.mp3" )
@@ -112,6 +107,40 @@ local hundredsPos =  screenW/2 - NUMBER_WIDTH*3 + NUMBER_WIDTH/2
 hundreds.x = hundredsPos
 tens.x = tensPos
 ones.x = onesPos
+
+-- scoreboard
+local scoreboardOptions = { frames = require("scoreboard").frames }
+local scoreboardSheet = graphics.newImageSheet( "assets/scoreboard.png", scoreboardOptions )
+local scoreboardSpriteOptions = { name="scoreboard", start=1, count=2, time=500 }
+local scoreboard = display.newSprite( scoreboardSheet, scoreboardSpriteOptions )
+scoreboard.x, scoreboard.y = screenW/2, screenH/2
+-- scoreboard:play()
+scoreboard.isVisible = false
+
+-- high score numbers sprite
+local highOnes = display.newSprite( numbersSheet, spriteOptions )
+local highTens = display.newSprite( numbersSheet, spriteOptions )
+local highHundreds = display.newSprite( numbersSheet, spriteOptions )
+highHundreds.anchorX, highHundreds.anchorY, highTens.anchorX, highTens.anchorY, highOnes.anchorX, highOnes.anchorY = 0, 0, 0, 0, 0, 0
+highOnes.isVisible = false
+highTens.isVisible = false
+highHundreds.isVisible = false
+-- local highHeight = screenH/2 + 37
+highOnes.y, highTens.y, highHundreds.y = ones.y, tens.y, hundreds.y
+-- local highWidth = screenW/2 - 60
+highHundreds.x, highTens.x, highOnes.x = ones.x, tens.x, hundreds.x
+
+-- score group
+local scoreGroup = display.newGroup()
+scoreGroup:insert( ones )
+scoreGroup:insert( tens )
+scoreGroup:insert( hundreds )
+
+local highscoreGroup = display.newGroup()
+highscoreGroup:insert( highOnes )
+highscoreGroup:insert( highTens )
+highscoreGroup:insert( highHundreds )
+
 
 local function writeScore(score)
 	local path = system.pathForFile( "highscore.txt", system.DocumentsDirectory )
@@ -243,13 +272,14 @@ function scene:enterScene( event )
 		pitchforkUp2.y = pitchforkDown2.y + 620
 	end
 
-	local function setScore(score)
+	local function setScore(score, ones, tens, hundreds)
 		local secondsDigit = score % 10
 		local tensDigit = math.floor(score % 100 / 10)
 		local hundredsDigit = math.floor(score % 1000 / 100)
 		ones:setFrame( secondsDigit + 1 )
 		tens:setFrame( tensDigit + 1 )
 		hundreds:setFrame( hundredsDigit + 1 )
+		ones.isVisible = (score >= 0)
 		tens.isVisible = (score >= 10)
 		hundreds.isVisible = (score >= 100)
 		-- set positioning
@@ -285,7 +315,7 @@ function scene:enterScene( event )
 		if ((pitchforkDown.x > origX-PITCHFORK_SPEED/2 and pitchforkDown.x <= origX+PITCHFORK_SPEED/2) or 
 			(pitchforkDown2.x > origX-PITCHFORK_SPEED/2 and pitchforkDown2.x <= origX+PITCHFORK_SPEED/2)) then
 			currentScore = currentScore + 1
-			setScore(currentScore)
+			setScore(currentScore, ones, tens, hundreds)
 			audio.play( coinSound )
 		end
 
@@ -335,11 +365,14 @@ function scene:enterScene( event )
 				gameOver = false
 				resetPitchforks()
 				resetPitchforks2()
-				myText:setFillColor( 0, 0 )
 				currentScore = 0
-				setScore(currentScore)
+				setScore(currentScore, ones, tens, hundreds)
 				deadPig.isVisible = false
 				pig.isVisible = true
+				scoreGroup.y = 0
+				scoreGroup.x = 0
+				scoreboard.isVisible = false
+				highscoreGroup.isVisible = false
 				storyboard.gotoScene( "view2" )
 			end
 			pigGroup:setLinearVelocity( 0, PIG_UPWARD_VELOCITY )
@@ -360,13 +393,26 @@ function scene:enterScene( event )
 				-- check for high score, set it if high #420
 				local highScore = getScore()
 				if currentScore > highScore then
-					print("new high score " .. currentScore)
 					writeScore(currentScore)
+					highScore = currentScore
+					scoreboard:setFrame( 2 )
+				else
+					scoreboard:setFrame( 1 )
 				end
+
+				-- show the scoreboard and current score
+				scoreboard.isVisible = true
+				scoreGroup.y = screenH/2 - 33 - ones.y
+				scoreGroup.x = -30
+
+				-- show the high score
+				setScore(highScore, highOnes, highTens, highHundreds)
+				highscoreGroup.y = screenH/2 + 5
+				highscoreGroup.x = -30
+				highscoreGroup.isVisible = true
 			end
 
 			-- game over!
-			myText:setFillColor( 0, 1 )
 			Runtime:removeEventListener( "enterFrame", moveThePig )
 		end
 	end
