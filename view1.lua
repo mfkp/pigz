@@ -47,9 +47,9 @@ function scene:createScene( event )
 	-- buttons
 	local options = { frames = require("buttons").frames }
 	local buttonsSheet = graphics.newImageSheet( "assets/buttons.png", options )
-	local spriteOptions = { name="numbers", start=1, count=6, time=1000 }
+	local spriteOptions = { name="buttons", start=1, count=6, time=1000 }
 	local buttons = display.newSprite( buttonsSheet, spriteOptions )
-	buttons.x, buttons.y = screenW/2, screenH/(3/2)
+	buttons.x, buttons.y = screenW/2, screenH*2/3
 	-- buttons:play()
 
 	local function startGame( event )
