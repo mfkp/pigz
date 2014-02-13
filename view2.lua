@@ -16,7 +16,7 @@ local PIG_UPWARD_VELOCITY = -400
 local ROTATION_RATIO = PIG_UPWARD_VELOCITY / -20
 local FENCE_SPEED = 1
 local CLOUD_SPEED = 0.3
-local PITCHFORK_SPEED = 5
+local PITCHFORK_SPEED = 3
 local ONE_OFFSET = 10 -- pixels offset for the "one" number
 local gameOver = false
 

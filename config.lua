@@ -3,7 +3,7 @@ application = {
 		width = 320,
 		height = 320 * display.pixelHeight/display.pixelWidth,
         scale = "letterBox",
-		fps = 30,
+		fps = 60,
 		
 		--[[
         imageSuffix = {
