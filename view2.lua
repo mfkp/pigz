@@ -7,11 +7,13 @@
 local storyboard = require( "storyboard" )
 local scene = storyboard.newScene()
 local physics = require( "physics" )
-
 physics.setScale( 90 )
 -- physics.setDrawMode( "hybrid" )
 physics.start()
 physics.setGravity( 0, 15 )
+
+local isAndroid = system.getInfo( "platformName" ) == "Android"
+
 local PIG_UPWARD_VELOCITY = -400
 local ROTATION_RATIO = PIG_UPWARD_VELOCITY / -20
 local FENCE_SPEED = 1
@@ -265,6 +267,11 @@ end
 function scene:enterScene( event )
 	local group = self.view
 
+	local screenButton = display.newRect( 0, 0, screenW, screenH )
+	screenButton.anchorX = 0
+	screenButton.anchorY = 0
+	screenButton:setFillColor( 1, 0.01 )
+
 	local function resetPitchforks()
 		pitchforkDown.x = pitchforkDown2.x + screenW/2 + pitchforkDown.contentWidth
 		pitchforkUp.x = pitchforkDown.x
@@ -388,7 +395,12 @@ function scene:enterScene( event )
 				storyboard.gotoScene( "view2" )
 			end
 			pigGroup:setLinearVelocity( 0, PIG_UPWARD_VELOCITY )
-			audio.play( flapSound )
+			
+			if isAndroid then
+				media.playSound( 'assets/sounds/flap.mp3' )
+			else
+				audio.play( flapSound )
+			end
 		end
 		return true  --prevents touch propagation to underlying objects
 	end
@@ -397,57 +409,72 @@ function scene:enterScene( event )
 		if ( event.phase == "began" ) then
 			
 			if ( not gameOver ) then
+
 				gameOver = true
-				audio.play( oinkSound )
+				if isAndroid then
+					media.playSound( 'assets/sounds/oink.mp3' )
+				else
+					audio.play( oinkSound )
+				end
+				
 				-- swap out live pig for dead pig
 				deadPig.isVisible = true
 				pig.isVisible = false
-				-- check for high score, set it if high #420
-				local highScore = getScore()
-				if currentScore > highScore then
-					writeScore(currentScore)
-					highScore = currentScore
-					scoreboard:setFrame( 2 )
-				else
-					scoreboard:setFrame( 1 )
+
+				screenButton:removeEventListener( "touch", screenTouchListener )
+
+				local function showScoreboard ()
+					-- check for high score, set it if high #420
+					local highScore = getScore()
+					if currentScore > highScore then
+						writeScore(currentScore)
+						highScore = currentScore
+						scoreboard:setFrame( 2 )
+					else
+						scoreboard:setFrame( 1 )
+					end
+
+					-- show the scoreboard and current score
+					scoreboard.isVisible = true
+					scoreGroup.y = screenH/2 - 15 - ones.y
+					scoreGroup.x = -60
+					if currentScore < 100 then
+						scoreGroup.x = scoreGroup.x - NUMBER_WIDTH/2
+					end
+					if currentScore < 10 then
+						scoreGroup.x = scoreGroup.x - NUMBER_WIDTH/2
+					end
+
+					-- show the high score
+					setScore(highScore, highOnes, highTens, highHundreds)
+					highscoreGroup.y = screenH/2 + 25
+					highscoreGroup.x = -60
+					highscoreGroup.isVisible = true
+					if highScore < 100 then
+						highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH/2
+					end
+					if highScore < 10 then
+						highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH/2
+					end
+
+					-- show the correct medal based on score
+					if currentScore < 10 then
+						medals:setFrame( 1 )
+					elseif currentScore < 20 then
+						medals:setFrame( 2 )
+					elseif currentScore < 30 then
+						medals:setFrame( 3 )
+					elseif currentScore < 40 then
+						medals:setFrame( 4 )
+					else
+						medals:setFrame( 5 )
+					end
+					medals.isVisible = true
+
+					scoreboard:addEventListener( "touch", screenTouchListener )
 				end
 
-				-- show the scoreboard and current score
-				scoreboard.isVisible = true
-				scoreGroup.y = screenH/2 - 15 - ones.y
-				scoreGroup.x = -60
-				if currentScore < 100 then
-					scoreGroup.x = scoreGroup.x - NUMBER_WIDTH/2
-				end
-				if currentScore < 10 then
-					scoreGroup.x = scoreGroup.x - NUMBER_WIDTH/2
-				end
-
-				-- show the high score
-				setScore(highScore, highOnes, highTens, highHundreds)
-				highscoreGroup.y = screenH/2 + 25
-				highscoreGroup.x = -60
-				highscoreGroup.isVisible = true
-				if highScore < 100 then
-					highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH/2
-				end
-				if highScore < 10 then
-					highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH/2
-				end
-
-				-- show the correct medal based on score
-				if currentScore < 10 then
-					medals:setFrame( 1 )
-				elseif currentScore < 20 then
-					medals:setFrame( 2 )
-				elseif currentScore < 30 then
-					medals:setFrame( 3 )
-				elseif currentScore < 40 then
-					medals:setFrame( 4 )
-				else
-					medals:setFrame( 5 )
-				end
-				medals.isVisible = true
+				timer.performWithDelay( 1000, showScoreboard )
 			end
 
 			-- game over!
@@ -463,11 +490,7 @@ function scene:enterScene( event )
 	pigGroup.y = origY
 	Runtime:addEventListener( "enterFrame", moveThePig )
 
-	local screenButton = display.newRect( 0, 0, screenW, screenH )
-	screenButton.anchorX = 0
-	screenButton.anchorY = 0
-	screenButton:setFillColor( 1, 0.01 )
-	screenButton:addEventListener( "touch", screenTouchListener )  --add a "touch" listener to the object
+	screenButton:addEventListener( "touch", screenTouchListener )
 	
 end
 
