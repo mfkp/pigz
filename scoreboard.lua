@@ -4,15 +4,15 @@ sheetData.frames = {
 	{
 		x = 0,
 		y = 0,
-		width = 160,
-		height = 126,
+		width = 230,
+		height = 171,
 	},
 
 	{
-		x = 160,
+		x = 230,
 		y = 0,
-		width = 160,
-		height = 126,
+		width = 230,
+		height = 171,
 	},
 }
 

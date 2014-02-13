@@ -114,7 +114,6 @@ local scoreboardSheet = graphics.newImageSheet( "assets/scoreboard.png", scorebo
 local scoreboardSpriteOptions = { name="scoreboard", start=1, count=2, time=500 }
 local scoreboard = display.newSprite( scoreboardSheet, scoreboardSpriteOptions )
 scoreboard.x, scoreboard.y = screenW/2, screenH/2
--- scoreboard:play()
 scoreboard.isVisible = false
 
 -- high score numbers sprite
@@ -140,6 +139,18 @@ local highscoreGroup = display.newGroup()
 highscoreGroup:insert( highOnes )
 highscoreGroup:insert( highTens )
 highscoreGroup:insert( highHundreds )
+
+-- medals sprite
+local medalsOptions = {
+    width = 64,
+    height = 90,
+    numFrames = 5
+}
+local medalsSheet = graphics.newImageSheet( "assets/medals.png", medalsOptions )
+local medalsSpriteOptions = { name="medals", start=1, count=5, time=500 }
+local medals = display.newSprite( medalsSheet, medalsSpriteOptions )
+medals.x, medals.y = screenW/2 + 60, screenH/2 + 15
+medals.isVisible = false
 
 
 local function writeScore(score)
@@ -373,6 +384,7 @@ function scene:enterScene( event )
 				scoreGroup.x = 0
 				scoreboard.isVisible = false
 				highscoreGroup.isVisible = false
+				medals.isVisible = false
 				storyboard.gotoScene( "view2" )
 			end
 			pigGroup:setLinearVelocity( 0, PIG_UPWARD_VELOCITY )
@@ -402,18 +414,45 @@ function scene:enterScene( event )
 
 				-- show the scoreboard and current score
 				scoreboard.isVisible = true
-				scoreGroup.y = screenH/2 - 33 - ones.y
-				scoreGroup.x = -30
+				scoreGroup.y = screenH/2 - 15 - ones.y
+				scoreGroup.x = -60
+				if currentScore < 100 then
+					scoreGroup.x = scoreGroup.x - NUMBER_WIDTH/2
+				end
+				if currentScore < 10 then
+					scoreGroup.x = scoreGroup.x - NUMBER_WIDTH/2
+				end
 
 				-- show the high score
 				setScore(highScore, highOnes, highTens, highHundreds)
-				highscoreGroup.y = screenH/2 + 5
-				highscoreGroup.x = -30
+				highscoreGroup.y = screenH/2 + 25
+				highscoreGroup.x = -60
 				highscoreGroup.isVisible = true
+				if highScore < 100 then
+					highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH/2
+				end
+				if highScore < 10 then
+					highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH/2
+				end
+
+				-- show the correct medal based on score
+				if currentScore < 10 then
+					medals:setFrame( 1 )
+				elseif currentScore < 20 then
+					medals:setFrame( 2 )
+				elseif currentScore < 30 then
+					medals:setFrame( 3 )
+				elseif currentScore < 40 then
+					medals:setFrame( 4 )
+				else
+					medals:setFrame( 5 )
+				end
+				medals.isVisible = true
 			end
 
 			-- game over!
 			Runtime:removeEventListener( "enterFrame", moveThePig )
+
 		end
 	end
 
