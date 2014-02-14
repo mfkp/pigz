@@ -115,7 +115,7 @@ local scoreboardOptions = { frames = require("scoreboard").frames }
 local scoreboardSheet = graphics.newImageSheet( "assets/scoreboard.png", scoreboardOptions )
 local scoreboardSpriteOptions = { name="scoreboard", start=1, count=2, time=500 }
 local scoreboard = display.newSprite( scoreboardSheet, scoreboardSpriteOptions )
-scoreboard.x, scoreboard.y = screenW/2, screenH/2
+scoreboard.x, scoreboard.y = screenW/2, screenH/2 - 40
 scoreboard.isVisible = false
 
 -- high score numbers sprite
@@ -151,13 +151,13 @@ local medalsOptions = {
 local medalsSheet = graphics.newImageSheet( "assets/medals.png", medalsOptions )
 local medalsSpriteOptions = { name="medals", start=1, count=5, time=500 }
 local medals = display.newSprite( medalsSheet, medalsSpriteOptions )
-medals.x, medals.y = screenW/2 + 60, screenH/2 + 15
+medals.x, medals.y = screenW/2 + 60, screenH/2 - 25
 medals.isVisible = false
 
 -- restart & share buttons
-local playButton = display.newImage( "assets/btnPlay.png", 85, 420 )
+local playButton = display.newImage( "assets/btnPlay.png", 85, 380 )
 playButton.isVisible = false
-local shareButton = display.newImage( "assets/btnShare.png", 235, 420 )
+local shareButton = display.newImage( "assets/btnShare.png", 235, 380 )
 shareButton.isVisible = false
 
 local function writeScore(score)
@@ -337,7 +337,7 @@ function scene:enterScene( event )
 		-- check for +1 score
 		if ((pitchforkDown.x > origX-PITCHFORK_SPEED/2 and pitchforkDown.x <= origX+PITCHFORK_SPEED/2) or 
 			(pitchforkDown2.x > origX-PITCHFORK_SPEED/2 and pitchforkDown2.x <= origX+PITCHFORK_SPEED/2)) then
-			currentScore = currentScore + 1
+			currentScore = math.min(999, currentScore + 1)
 			setScore(currentScore, ones, tens, hundreds)
 			audio.play( coinSound )
 		end
@@ -446,7 +446,7 @@ function scene:enterScene( event )
 
 					-- show the scoreboard and current score
 					scoreboard.isVisible = true
-					scoreGroup.y = screenH/2 - 15 - ones.y
+					scoreGroup.y = screenH/2 - 55 - ones.y
 					scoreGroup.x = -60
 					if currentScore < 100 then
 						scoreGroup.x = scoreGroup.x - NUMBER_WIDTH/2
@@ -457,7 +457,7 @@ function scene:enterScene( event )
 
 					-- show the high score
 					setScore(highScore, highOnes, highTens, highHundreds)
-					highscoreGroup.y = screenH/2 + 25
+					highscoreGroup.y = screenH/2 - 15
 					highscoreGroup.x = -60
 					highscoreGroup.isVisible = true
 					if highScore < 100 then
