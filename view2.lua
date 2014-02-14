@@ -29,7 +29,9 @@ local screenW, screenH = display.contentWidth, display.contentHeight
 local pigOptions = {
     width = 65,
     height = 44,
-    numFrames = 4
+    numFrames = 4,
+    sheetContentWidth = 260,
+    sheetContentHeight = 44
 }
 local pigSheet = graphics.newImageSheet( "assets/pigs.png", pigOptions )
 local pigSpriteOptions = { name="pig", start=1, count=4, time=250 }
@@ -50,7 +52,9 @@ local origY = screenH / 2
 local pitchforkOptions = {
     width = 54,
     height = 500,
-    numFrames = 2
+    numFrames = 2,
+    sheetContentWidth = 108, 
+    sheetContentHeight = 500
 }
 local pitchforkSheet = graphics.newImageSheet( "assets/pitchfork.png", pitchforkOptions )
 
@@ -92,7 +96,7 @@ local oinkSound = audio.loadSound( "assets/sounds/oink.mp3" )
 local coinSound = audio.loadSound( "assets/sounds/coin.mp3" )
 
 -- numbers sprite
-local options = { frames = require("numbers").frames }
+local options = { frames = require("numbers").frames, sheetContentWidth=250, sheetContentHeight=26 }
 local numbersSheet = graphics.newImageSheet( "assets/numbers.png", options )
 local spriteOptions = { name="numbers", start=1, count=10, time=1000 }
 local ones = display.newSprite( numbersSheet, spriteOptions )
@@ -111,7 +115,7 @@ tens.x = tensPos
 ones.x = onesPos
 
 -- scoreboard
-local scoreboardOptions = { frames = require("scoreboard").frames }
+local scoreboardOptions = { frames = require("scoreboard").frames, sheetContentWidth=460, sheetContentHeight=171 }
 local scoreboardSheet = graphics.newImageSheet( "assets/scoreboard.png", scoreboardOptions )
 local scoreboardSpriteOptions = { name="scoreboard", start=1, count=2, time=500 }
 local scoreboard = display.newSprite( scoreboardSheet, scoreboardSpriteOptions )
@@ -146,7 +150,9 @@ highscoreGroup:insert( highHundreds )
 local medalsOptions = {
     width = 64,
     height = 90,
-    numFrames = 5
+    numFrames = 5,
+    sheetContentWidth = 320, 
+    sheetContentHeight = 90
 }
 local medalsSheet = graphics.newImageSheet( "assets/medals.png", medalsOptions )
 local medalsSpriteOptions = { name="medals", start=1, count=5, time=500 }

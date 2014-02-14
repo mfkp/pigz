@@ -34,7 +34,9 @@ function scene:createScene( event )
 	local pigOptions = {
 		width = 65,
 		height = 44,
-		numFrames = 4
+		numFrames = 4,
+		sheetContentWidth = 260,
+		sheetContentHeight = 44
 	}
 	local pigSheet = graphics.newImageSheet( "assets/pigs.png", pigOptions )
 	local pigSpriteOptions = { name="pig", start=1, count=4, time=250 }
@@ -61,8 +63,8 @@ function scene:createScene( event )
 	-- local spriteOptions = { name="buttons", start=1, count=6, time=1000 }
 	-- local buttons = display.newSprite( buttonsSheet, spriteOptions )
 	-- buttons.x, buttons.y = screenW/2, screenH*2/3
-	local playButton = display.newImage( "assets/btnPlay.png", screenW/2, 220 )
-	local rateButton = display.newImage( "assets/btnRate.png", screenW/2, 320 )
+	local playButton = display.newImage( "assets/btnPlay.png", screenW/2, 230 )
+	local rateButton = display.newImage( "assets/btnRate.png", screenW/2, 310 )
 
 	local function startGame( event )
 		storyboard.purgeScene( "view1" )
