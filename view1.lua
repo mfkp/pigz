@@ -20,6 +20,17 @@ function scene:createScene( event )
 	bg.anchorY = 0
 	bg:setFillColor( 108/255, 233/255, 255/255 )
 
+	local grass = display.newRect( 0, 470, screenW, 100 )
+	grass.anchorX = 0
+	grass.anchorY = 0
+	grass:setFillColor( 51/255, 204/255, 102/255 )
+
+	local gradient = display.newImage( "assets/spashGradient.png", screenW/2, screenH/2 )
+
+	local fence = display.newImage( "assets/splashFence.png", screenW/2, 423 )
+
+	local clouds = display.newImage( "assets/clouds.png", screenW/2, 100 )
+
 	local pigOptions = {
 		width = 65,
 		height = 44,
@@ -29,7 +40,7 @@ function scene:createScene( event )
 	local pigSpriteOptions = { name="pig", start=1, count=4, time=250 }
 
 	local pig = display.newSprite( pigSheet, pigSpriteOptions )
-	origX, origY = screenW / 2, screenH / 2
+	origX, origY = screenW / 2, 100
 	pig.x, pig.y = origX, origY
 	pig:play()
 
@@ -42,26 +53,32 @@ function scene:createScene( event )
 	timer.performWithDelay( 1000, moveThePig, 0 )
 
 	-- logo
-	local logo = display.newImage( "assets/logo.png", screenW/2, screenH/3 )
+	-- local logo = display.newImage( "assets/logo.png", screenW/2, screenH/3 )
 
 	-- buttons
-	local options = { frames = require("buttons").frames }
-	local buttonsSheet = graphics.newImageSheet( "assets/buttons.png", options )
-	local spriteOptions = { name="buttons", start=1, count=6, time=1000 }
-	local buttons = display.newSprite( buttonsSheet, spriteOptions )
-	buttons.x, buttons.y = screenW/2, screenH*2/3
-	-- buttons:play()
+	-- local options = { frames = require("buttons").frames }
+	-- local buttonsSheet = graphics.newImageSheet( "assets/buttons.png", options )
+	-- local spriteOptions = { name="buttons", start=1, count=6, time=1000 }
+	-- local buttons = display.newSprite( buttonsSheet, spriteOptions )
+	-- buttons.x, buttons.y = screenW/2, screenH*2/3
+	local playButton = display.newImage( "assets/btnPlay.png", screenW/2, 220 )
+	local rateButton = display.newImage( "assets/btnRate.png", screenW/2, 320 )
 
 	local function startGame( event )
 		storyboard.purgeScene( "view1" )
 		storyboard.gotoScene( "view2" )
 	end
-	buttons:addEventListener( "touch", startGame )
+	playButton:addEventListener( "touch", startGame )
 
 	group:insert(bg)
+	group:insert(gradient)
+	group:insert(clouds)
+	group:insert(grass)
+	group:insert(fence)
 	group:insert(pig)
-	group:insert(logo)
-	group:insert(buttons)
+	-- group:insert(logo)
+	group:insert(playButton)
+	group:insert(rateButton)
 
 end
 
