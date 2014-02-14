@@ -154,6 +154,11 @@ local medals = display.newSprite( medalsSheet, medalsSpriteOptions )
 medals.x, medals.y = screenW/2 + 60, screenH/2 + 15
 medals.isVisible = false
 
+-- restart & share buttons
+local playButton = display.newImage( "assets/btnPlay.png", 85, 420 )
+playButton.isVisible = false
+local shareButton = display.newImage( "assets/btnShare.png", 235, 420 )
+shareButton.isVisible = false
 
 local function writeScore(score)
 	local path = system.pathForFile( "highscore.txt", system.DocumentsDirectory )
@@ -392,6 +397,8 @@ function scene:enterScene( event )
 				scoreboard.isVisible = false
 				highscoreGroup.isVisible = false
 				medals.isVisible = false
+				playButton.isVisible = false
+				shareButton.isVisible = false
 				storyboard.gotoScene( "view2" )
 			end
 			pigGroup:setLinearVelocity( 0, PIG_UPWARD_VELOCITY )
@@ -424,6 +431,9 @@ function scene:enterScene( event )
 				screenButton:removeEventListener( "touch", screenTouchListener )
 
 				local function showScoreboard ()
+					-- show the share/play buttons
+					playButton.isVisible = true
+					shareButton.isVisible = true
 					-- check for high score, set it if high #420
 					local highScore = getScore()
 					if currentScore > highScore then
@@ -471,7 +481,7 @@ function scene:enterScene( event )
 					end
 					medals.isVisible = true
 
-					scoreboard:addEventListener( "touch", screenTouchListener )
+					playButton:addEventListener( "touch", screenTouchListener )
 				end
 
 				timer.performWithDelay( 1000, showScoreboard )
