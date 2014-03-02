@@ -20,18 +20,17 @@ local FENCE_SPEED = 1
 local CLOUD_SPEED = 0.3
 local PITCHFORK_SPEED = 3
 local ONE_OFFSET = 10 -- pixels offset for the "one" number
-local gameOver = false
 
 local currentScore = 0
 
 local screenW, screenH = display.contentWidth, display.contentHeight
 
 local pigOptions = {
-    width = 65,
-    height = 44,
-    numFrames = 4,
-    sheetContentWidth = 260,
-    sheetContentHeight = 44
+	width = 65,
+	height = 44,
+	numFrames = 4,
+	sheetContentWidth = 260,
+	sheetContentHeight = 44
 }
 local pigSheet = graphics.newImageSheet( "assets/pigs.png", pigOptions )
 local pigSpriteOptions = { name="pig", start=1, count=4, time=250 }
@@ -42,10 +41,9 @@ local deadPig = display.newImage( pigGroup, "assets/dead.png" )
 local pig = display.newSprite( pigGroup, pigSheet, pigSpriteOptions )
 pig:play()
 deadPig.isVisible = false
-pigGroup.whichPig = "alive"
 
 local origX = screenW / 4
-local origY = screenH / 2
+local origY = screenH / 3
 
 -- local pigShape = { 12,26, 26,10, 32,6, 32,-4, 16,-18, -6,-18, -16,-6, -10,16 }
 
@@ -169,6 +167,20 @@ playButton.isVisible = false
 local shareButton = display.newImage( "assets/btnShare.png", 235, 380 )
 shareButton.isVisible = false
 
+local tapToFlyOptions = {
+	width = 109,
+	height = 90,
+	numFrames = 2,
+	sheetContentWidth = 218,
+	sheetContentHeight = 90
+}
+local tapToFlySheet = graphics.newImageSheet( "assets/tooltip.png", tapToFlyOptions )
+local tapToFlySpriteOptions = { name="tapToFly", start=1, count=2, time=500 }
+local tapToFly = display.newSprite( tapToFlySheet, tapToFlySpriteOptions )
+tapToFly.x = origX
+tapToFly.y = 300
+tapToFly:play()
+
 local function writeScore(score)
 	local path = system.pathForFile( "highscore.txt", system.DocumentsDirectory )
 	local file = io.open (path, "w" )
@@ -273,6 +285,7 @@ function scene:createScene( event )
 	group:insert( pitchforkUp2 )
 	group:insert( pitchforkDown2 )
 	group:insert( grass )
+	group:insert( tapToFly )
 
 	physics.addBody( grass, "static", { friction=0.5, bounce=0.3 } )
 end
@@ -280,11 +293,15 @@ end
 -- Called immediately after scene has moved onscreen:
 function scene:enterScene( event )
 	local group = self.view
+	local started = false
+	local gameOver = false
 
 	local screenButton = display.newRect( 0, 0, screenW, screenH )
 	screenButton.anchorX = 0
 	screenButton.anchorY = 0
 	screenButton:setFillColor( 1, 0.01 )
+
+	physics.pause()
 
 	local function resetPitchforks()
 		pitchforkDown.x = pitchforkDown2.x + screenW/2 + pitchforkDown.contentWidth
@@ -330,6 +347,10 @@ function scene:enterScene( event )
 	end
 
 	local function moveThePig()
+		if not started then
+			return
+		end
+
 		-- move pitchforks
 		pitchforkDown.x = pitchforkDown.x - PITCHFORK_SPEED
 		pitchforkUp.x = pitchforkDown.x
@@ -393,7 +414,7 @@ function scene:enterScene( event )
 
 	local function screenTouchListener( event )
 		if ( event.phase == "began" ) then
-			if ( gameOver ) then
+			if gameOver then
 				gameOver = false
 				resetPitchforks()
 				resetPitchforks2()
@@ -401,6 +422,7 @@ function scene:enterScene( event )
 				setScore(currentScore, ones, tens, hundreds)
 				deadPig.isVisible = false
 				pig.isVisible = true
+				pigGroup.rotation = 0
 				scoreGroup.anchorChildren = false
 				scoreGroup.y = 0
 				scoreGroup.x = 0
@@ -410,14 +432,27 @@ function scene:enterScene( event )
 				playButton.isVisible = false
 				shareButton.isVisible = false
 				storyboard.gotoScene( "view2" )
+				tapToFly.isVisible = true
+				pig:pause()
+				pig:setFrame( 4 )
+				return true
 			end
+
+			if started then
+				if isAndroid then
+					media.playSound( 'assets/sounds/flap.mp3' )
+				else
+					audio.play( flapSound )
+				end
+			else
+				started = true
+				physics.start()
+				pig:play()
+				tapToFly.isVisible = false
+			end
+
 			pigGroup:setLinearVelocity( 0, PIG_UPWARD_VELOCITY )
 			
-			if isAndroid then
-				media.playSound( 'assets/sounds/flap.mp3' )
-			else
-				audio.play( flapSound )
-			end
 		end
 		return true  --prevents touch propagation to underlying objects
 	end
@@ -428,6 +463,8 @@ function scene:enterScene( event )
 			if ( not gameOver ) then
 
 				gameOver = true
+				started = false
+
 				if isAndroid then
 					media.playSound( 'assets/sounds/oink.mp3' )
 				else
