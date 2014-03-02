@@ -39,7 +39,7 @@ local pigSpriteOptions = { name="pig", start=1, count=4, time=250 }
 local pigGroup = display.newGroup()
 local deadPig = display.newImage( pigGroup, "assets/dead.png" )
 local pig = display.newSprite( pigGroup, pigSheet, pigSpriteOptions )
-pig:play()
+pig:setFrame( 4 )
 deadPig.isVisible = false
 
 local origX = screenW / 4
@@ -177,8 +177,8 @@ local tapToFlyOptions = {
 local tapToFlySheet = graphics.newImageSheet( "assets/tooltip.png", tapToFlyOptions )
 local tapToFlySpriteOptions = { name="tapToFly", start=1, count=2, time=500 }
 local tapToFly = display.newSprite( tapToFlySheet, tapToFlySpriteOptions )
-tapToFly.x = origX
-tapToFly.y = 300
+tapToFly.x = origX + 10
+tapToFly.y = 260
 tapToFly:play()
 
 local function writeScore(score)
