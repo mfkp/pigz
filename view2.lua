@@ -142,6 +142,9 @@ scoreGroup:insert( tens )
 scoreGroup:insert( hundreds )
 
 local highscoreGroup = display.newGroup()
+highscoreGroup.anchorX = 0
+highscoreGroup.anchorY = 0
+highscoreGroup.anchorChildren = true
 highscoreGroup:insert( highOnes )
 highscoreGroup:insert( highTens )
 highscoreGroup:insert( highHundreds )
@@ -398,6 +401,7 @@ function scene:enterScene( event )
 				setScore(currentScore, ones, tens, hundreds)
 				deadPig.isVisible = false
 				pig.isVisible = true
+				scoreGroup.anchorChildren = false
 				scoreGroup.y = 0
 				scoreGroup.x = 0
 				scoreboard.isVisible = false
@@ -452,25 +456,36 @@ function scene:enterScene( event )
 
 					-- show the scoreboard and current score
 					scoreboard.isVisible = true
-					scoreGroup.y = screenH/2 - 55 - ones.y
-					scoreGroup.x = -60
+					scoreGroup.anchorX = 0
+					scoreGroup.anchorY = 0
+					scoreGroup.anchorChildren = true
+					scoreGroup.y = screenH/2 - 37 - ones.y
+					scoreGroup.x = 60
+					if currentScore >= 100 and hundredsDigit ~= 1 then
+						scoreGroup.x = scoreGroup.x + 2
+					end
 					if currentScore < 100 then
-						scoreGroup.x = scoreGroup.x - NUMBER_WIDTH/2
+						scoreGroup.x = scoreGroup.x - NUMBER_WIDTH
 					end
 					if currentScore < 10 then
-						scoreGroup.x = scoreGroup.x - NUMBER_WIDTH/2
+						scoreGroup.x = scoreGroup.x - NUMBER_WIDTH
 					end
+
+					
 
 					-- show the high score
 					setScore(highScore, highOnes, highTens, highHundreds)
-					highscoreGroup.y = screenH/2 - 15
-					highscoreGroup.x = -60
+					highscoreGroup.y = screenH/2 + 5
+					highscoreGroup.x = 60
 					highscoreGroup.isVisible = true
+					if highScore >= 100 and hundredsDigit ~= 1 then
+						highscoreGroup.x = highscoreGroup.x + 2
+					end
 					if highScore < 100 then
-						highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH/2
+						highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH
 					end
 					if highScore < 10 then
-						highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH/2
+						highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH
 					end
 
 					-- show the correct medal based on score
