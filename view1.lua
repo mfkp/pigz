@@ -6,6 +6,9 @@
 -- 
 
 local storyboard = require( "storyboard" )
+local rateit = require("rateit")
+rateit.setiTunesURL("com.vibramedia.pigz")
+rateit.setAndroidURL("com.vibramedia.pigz")
 local scene = storyboard.newScene()
 
 -- Called when the scene's view does not exist:
@@ -71,6 +74,11 @@ function scene:createScene( event )
 		storyboard.gotoScene( "view2" )
 	end
 	playButton:addEventListener( "touch", startGame )
+
+	local function rateApp ( event )
+		rateit.openURL()
+	end
+	rateButton:addEventListener( "touch", rateApp )
 
 	group:insert(bg)
 	group:insert(gradient)
