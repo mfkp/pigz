@@ -177,8 +177,8 @@ local tapToFlyOptions = {
 local tapToFlySheet = graphics.newImageSheet( "assets/tooltip.png", tapToFlyOptions )
 local tapToFlySpriteOptions = { name="tapToFly", start=1, count=2, time=500 }
 local tapToFly = display.newSprite( tapToFlySheet, tapToFlySpriteOptions )
-tapToFly.x = origX + 10
-tapToFly.y = 260
+tapToFly.x = screenW/2
+tapToFly.y = screenH*2/3
 tapToFly:play()
 
 local function writeScore(score)
