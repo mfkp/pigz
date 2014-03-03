@@ -25,6 +25,40 @@ local currentScore = 0
 
 local screenW, screenH = display.contentWidth, display.contentHeight
 
+local Themes = {
+	["Day"] = {
+		["Colors"] = {
+			["Sky"] = {
+				r = 108/255,
+				g = 233/255,
+				b = 255/255
+			},
+			["Grass"] = {
+				r = 51/255,
+				g = 204/255,
+				b = 102/255
+			}
+		}
+	},
+	["Night"] = {
+		["Colors"] = {
+			["Sky"] = {
+				r = 16/255,
+				g = 74/255,
+				b = 183/255
+			},
+			["Grass"] = {
+				r = 0/255,
+				g = 142/255,
+				b = 70/255
+			}
+		}
+	}
+}
+local themeNames = {"Day", "Night"} -- kid cudi
+
+-- initialization goes here (TODO: refactor)
+
 local pigOptions = {
 	width = 65,
 	height = 44,
@@ -87,6 +121,7 @@ physics.addBody( pitchforkUp2, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pigGroup, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
 
 local fence1, fence2, fence3, clouds1, clouds2, clouds3
+local stars1, stars2, stars3
 
 local flapSound = audio.loadSound( "assets/sounds/flap.mp3" )
 -- local boingSound = audio.loadSound( "assets/sounds/boing.mp3" )
@@ -214,6 +249,9 @@ local function getScore()
 	return nil
 end
 
+local bg, grass
+local currentTheme = Themes.Day
+
 -----------------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
 -- 
@@ -225,17 +263,18 @@ end
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
 	local group = self.view
+	local colors = currentTheme.Colors
 	
 	-- create a white background to fill screen
-	local bg = display.newRect( 0, 0, screenW, screenH )
+	bg = display.newRect( 0, 0, screenW, screenH )
 	bg.anchorX = 0
 	bg.anchorY = 0
-	bg:setFillColor( 108/255, 233/255, 255/255 )
+	bg:setFillColor( colors.Sky.r, colors.Sky.g, colors.Sky.b )
 
-	local grass = display.newRect( 0, 470, screenW, 100 )
+	grass = display.newRect( 0, 470, screenW, 100 )
 	grass.anchorX = 0
 	grass.anchorY = 0
-	grass:setFillColor( 51/255, 204/255, 102/255 )
+	grass:setFillColor( colors.Grass.r, colors.Grass.g, colors.Grass.b )
 
 	fence1 = display.newImage( "assets/fence.png" )
 	fence1.anchorX = 0
@@ -264,19 +303,44 @@ function scene:createScene( event )
 	clouds2 = display.newImage( "assets/clouds.png" )
 	clouds2.anchorX = 0
 	clouds2.anchorY = 0
-	clouds2.x = 200
+	clouds2.x = 400
 	clouds2.y = 200
 
 	clouds3 = display.newImage( "assets/clouds.png" )
 	clouds3.anchorX = 0
 	clouds3.anchorY = 0
-	clouds3.x = 400
+	clouds3.x = 700
 	clouds3.y = 50
+
+	stars1 = display.newImage( "assets/stars.png" )
+	stars1.anchorX = 0
+	stars1.anchorY = 0
+	stars1.x = 0
+	stars1.y = 50
+
+	stars2 = display.newImage( "assets/stars.png" )
+	stars2.anchorX = 0
+	stars2.anchorY = 0
+	stars2.x = 150
+	stars2.y = 25
+
+	stars3 = display.newImage( "assets/stars.png" )
+	stars3.anchorX = 0
+	stars3.anchorY = 0
+	stars3.x = 60
+	stars3.y = 165
+
+	stars1.isVisible = false
+	stars2.isVisible = false
+	stars3.isVisible = false
 
 	group:insert( bg )
 	group:insert( clouds1 )
 	group:insert( clouds2 )
 	group:insert( clouds3 )
+	group:insert( stars1 )
+	group:insert( stars2 )
+	group:insert( stars3 )
 	group:insert( fence1 )
 	group:insert( fence2 )
 	group:insert( fence3 )
@@ -392,12 +456,12 @@ function scene:enterScene( event )
 			clouds1.x = clouds1.width*2
 			clouds1.y = math.random( 50, 250 )
 		end
-		clouds2.x = clouds2.x - CLOUD_SPEED
+		clouds2.x = clouds2.x - CLOUD_SPEED*2
 		if ( clouds2.x <= -clouds2.width ) then
 			clouds2.x = clouds2.width*2
 			clouds2.y = math.random( 50, 250 )
 		end
-		clouds3.x = clouds3.x - CLOUD_SPEED
+		clouds3.x = clouds3.x - CLOUD_SPEED*3
 		if ( clouds3.x <= -clouds3.width ) then
 			clouds3.x = clouds3.width*2
 			clouds2.y = math.random( 50, 250 )
@@ -455,6 +519,16 @@ function scene:enterScene( event )
 				pig:pause()
 				pig:setFrame( 4 )
 				pigGroup.rotation = 0
+				-- pick random theme
+				local newTheme = themeNames[ math.random( #themeNames ) ]
+				currentTheme = Themes[ newTheme ]
+				local colors = currentTheme.Colors
+				bg:setFillColor( colors.Sky.r, colors.Sky.g, colors.Sky.b )
+				grass:setFillColor( colors.Grass.r, colors.Grass.g, colors.Grass.b )
+				local showClouds = (newTheme == "Day")
+				local showStars = not showClouds
+				stars1.isVisible, stars2.isVisible, stars3.isVisible = showStars, showStars, showStars
+				clouds1.isVisible, clouds2.isVisible, clouds3.isVisible = showClouds, showClouds, showClouds
 				return true
 			end
 
