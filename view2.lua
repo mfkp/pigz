@@ -149,11 +149,11 @@ highscoreGroup:insert( highHundreds )
 
 -- medals sprite
 local medalsOptions = {
-    width = 64,
-    height = 90,
-    numFrames = 5,
-    sheetContentWidth = 320, 
-    sheetContentHeight = 90
+	width = 64,
+	height = 90,
+	numFrames = 5,
+	sheetContentWidth = 320, 
+	sheetContentHeight = 90
 }
 local medalsSheet = graphics.newImageSheet( "assets/medals.png", medalsOptions )
 local medalsSpriteOptions = { name="medals", start=1, count=5, time=500 }
@@ -427,6 +427,11 @@ function scene:enterScene( event )
 		-- native.showPopup( "social", options )
 	end
 
+	-- local function playButtonListener( event )
+	-- 	storyboard.purgeScene( "view2" )
+	-- 	storyboard.gotoScene( "view1" )
+	-- end
+
 	local function screenTouchListener( event )
 		if ( event.phase == "began" ) then
 			if gameOver then
@@ -437,7 +442,6 @@ function scene:enterScene( event )
 				setScore(currentScore, ones, tens, hundreds)
 				deadPig.isVisible = false
 				pig.isVisible = true
-				pigGroup.rotation = 0
 				scoreGroup.anchorChildren = false
 				scoreGroup.y = 0
 				scoreGroup.x = 0
@@ -450,6 +454,7 @@ function scene:enterScene( event )
 				tapToFly.isVisible = true
 				pig:pause()
 				pig:setFrame( 4 )
+				pigGroup.rotation = 0
 				return true
 			end
 
@@ -475,7 +480,7 @@ function scene:enterScene( event )
 	local function onPigCollision( self, event )
 		if ( event.phase == "began" ) then
 			
-			if ( not gameOver ) then
+			if not gameOver then
 
 				gameOver = true
 				started = false
@@ -541,17 +546,7 @@ function scene:enterScene( event )
 					end
 
 					-- show the correct medal based on score
-					if currentScore < 10 then
-						medals:setFrame( 1 )
-					elseif currentScore < 20 then
-						medals:setFrame( 2 )
-					elseif currentScore < 30 then
-						medals:setFrame( 3 )
-					elseif currentScore < 40 then
-						medals:setFrame( 4 )
-					else
-						medals:setFrame( 5 )
-					end
+					medals:setFrame(math.min(5, math.max(1, math.ceil(currentScore/10))))
 					medals.isVisible = true
 
 					playButton:addEventListener( "touch", screenTouchListener )
