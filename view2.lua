@@ -444,17 +444,17 @@ function scene:enterScene( event )
 		-- move clouds
 		clouds1.x = clouds1.x - CLOUD_SPEED
 		if ( clouds1.x <= -clouds1.width ) then
-			clouds1.x = clouds1.width*2
+			clouds1.x = screenW
 			clouds1.y = math.random( 50, 250 )
 		end
 		clouds2.x = clouds2.x - CLOUD_SPEED*2
 		if ( clouds2.x <= -clouds2.width ) then
-			clouds2.x = clouds2.width*2
+			clouds2.x = screenW
 			clouds2.y = math.random( 50, 250 )
 		end
 		clouds3.x = clouds3.x - CLOUD_SPEED*3
 		if ( clouds3.x <= -clouds3.width ) then
-			clouds3.x = clouds3.width*2
+			clouds3.x = screenW
 			clouds2.y = math.random( 50, 250 )
 		end
 
