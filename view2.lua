@@ -367,22 +367,13 @@ function scene:enterScene( event )
 
 	physics.pause()
 
-	local function resetPitchforks()
-		pitchforkDown.x = pitchforkDown2.x + screenW/2 + pitchforkDown.contentWidth
-		pitchforkUp.x = pitchforkDown.x
+	local function resetPitchforks(upFork, downFork, startPos)
+		downFork.x = startPos + screenW/2 + downFork.contentWidth
+		upFork.x = downFork.x
 
 		-- randomize the position
-		pitchforkDown.y = math.random( -420, -220 ) -- 420 smoke a blunt
-		pitchforkUp.y = pitchforkDown.y + 620
-	end
-
-	local function resetPitchforks2()
-		pitchforkDown2.x = pitchforkDown.x + screenW/2 + pitchforkDown2.contentWidth
-		pitchforkUp2.x = pitchforkDown2.x
-
-		-- randomize the position
-		pitchforkDown2.y = math.random( -420, -220 ) -- 420 smoke a blunt
-		pitchforkUp2.y = pitchforkDown2.y + 620
+		downFork.y = math.random( -420, -220 ) -- 420 smoke a blunt
+		upFork.y = downFork.y + 620
 	end
 
 	local function setScore(score, ones, tens, hundreds)
@@ -419,13 +410,13 @@ function scene:enterScene( event )
 		pitchforkDown.x = pitchforkDown.x - PITCHFORK_SPEED
 		pitchforkUp.x = pitchforkDown.x
 		if ( pitchforkDown.x < 0 - pitchforkDown.contentWidth ) then
-			resetPitchforks()
+			resetPitchforks(pitchforkUp, pitchforkDown, pitchforkDown2.x)
 		end
 
 		pitchforkDown2.x = pitchforkDown2.x - PITCHFORK_SPEED
 		pitchforkUp2.x = pitchforkDown2.x
 		if ( pitchforkDown2.x < 0 - pitchforkDown2.contentWidth ) then
-			resetPitchforks2()
+			resetPitchforks(pitchforkUp2, pitchforkDown2, pitchforkDown.x)
 		end
 
 		-- check for +1 score
@@ -500,8 +491,8 @@ function scene:enterScene( event )
 		if ( event.phase == "began" ) then
 			if gameOver then
 				gameOver = false
-				resetPitchforks()
-				resetPitchforks2()
+				resetPitchforks(pitchforkUp, pitchforkDown, screenW)
+				resetPitchforks(pitchforkUp2, pitchforkDown2, pitchforkDown.x)
 				currentScore = 0
 				setScore(currentScore, ones, tens, hundreds)
 				deadPig.isVisible = false
