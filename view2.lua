@@ -374,32 +374,32 @@ function scene:enterScene( event )
 
 		-- move fence
 		fence1.x = fence1.x - FENCE_SPEED
-		if ( fence1.x <= -200 ) then
-			fence1.x = 400
+		if ( fence1.x <= -fence1.width ) then
+			fence1.x = fence1.width*2
 		end
 		fence2.x = fence2.x - FENCE_SPEED
-		if ( fence2.x <= -200 ) then
-			fence2.x = 400
+		if ( fence2.x <= -fence1.width ) then
+			fence2.x = fence2.width*2
 		end
 		fence3.x = fence3.x - FENCE_SPEED
-		if ( fence3.x <= -200 ) then
-			fence3.x = 400
+		if ( fence3.x <= -fence1.width ) then
+			fence3.x = fence3.width*2
 		end
 
 		-- move clouds
 		clouds1.x = clouds1.x - CLOUD_SPEED
-		if ( clouds1.x <= -200 ) then
-			clouds1.x = 400
+		if ( clouds1.x <= -clouds1.width ) then
+			clouds1.x = clouds1.width*2
 			clouds1.y = math.random( 50, 250 )
 		end
 		clouds2.x = clouds2.x - CLOUD_SPEED
-		if ( clouds2.x <= -200 ) then
-			clouds2.x = 400
+		if ( clouds2.x <= -clouds2.width ) then
+			clouds2.x = clouds2.width*2
 			clouds2.y = math.random( 50, 250 )
 		end
 		clouds3.x = clouds3.x - CLOUD_SPEED
-		if ( clouds3.x <= -200 ) then
-			clouds3.x = 400
+		if ( clouds3.x <= -clouds3.width ) then
+			clouds3.x = clouds3.width*2
 			clouds2.y = math.random( 50, 250 )
 		end
 
