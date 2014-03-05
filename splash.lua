@@ -1,14 +1,11 @@
 -----------------------------------------------------------------------------------------
 --
--- view2.lua
+-- splash.lua
 --
 -----------------------------------------------------------------------------------------
 -- 
 
 local storyboard = require( "storyboard" )
-local rateit = require("rateit")
-rateit.setiTunesURL("com.vibramedia.pigz")
-rateit.setAndroidURL("com.vibramedia.pigz")
 local scene = storyboard.newScene()
 
 -- Called when the scene's view does not exist:
@@ -21,75 +18,31 @@ function scene:createScene( event )
 	local bg = display.newRect( 0, 0, screenW, screenH )
 	bg.anchorX = 0
 	bg.anchorY = 0
-	bg:setFillColor( 108/255, 233/255, 255/255 )
-
-	local grass = display.newRect( 0, 470, screenW, 100 )
-	grass.anchorX = 0
-	grass.anchorY = 0
-	grass:setFillColor( 51/255, 204/255, 102/255 )
+	local g = graphics.newGradient({ 0, 142/255, 1 }, { 0, 1, 1 }, "up" )
+	bg:setFillColor( g )
 
 	local gradient = display.newImage( "assets/spashGradient.png", screenW/2, screenH/2 )
 
-	local fence = display.newImage( "assets/splashFence.png", screenW/2, 423 )
-
 	local clouds = display.newImage( "assets/clouds.png", screenW/2, 100 )
 
-	local pigOptions = {
-		width = 65,
-		height = 44,
-		numFrames = 4,
-		sheetContentWidth = 260,
-		sheetContentHeight = 44
-	}
-	local pigSheet = graphics.newImageSheet( "assets/pigs.png", pigOptions )
-	local pigSpriteOptions = { name="pig", start=1, count=4, time=250 }
-
-	local pig = display.newSprite( pigSheet, pigSpriteOptions )
-	origX, origY = screenW / 2, 100
-	pig.x, pig.y = origX, origY
-	pig.rotation = -11
-	pig:play()
-
-	-- make the pig float
-	local function moveThePig()
-		local moveTo = (pig.y > origY) and origY-10 or origY+10
-		transition.moveTo( pig, {x=pig.x, y=moveTo, transition=easing.inOutQuad, time=1000} )
+	local function goToIntro( event )
+		local options =
+		{
+			effect = "fromBottom",
+			time = 500
+		}
+		storyboard.gotoScene( "view1", options )
 	end
-	moveThePig()
-	timer.performWithDelay( 1000, moveThePig, 0 )
+
+	timer.performWithDelay( 2500, goToIntro, 1 )
 
 	-- logo
-	-- local logo = display.newImage( "assets/logo.png", screenW/2, screenH/3 )
-
-	-- buttons
-	-- local options = { frames = require("buttons").frames }
-	-- local buttonsSheet = graphics.newImageSheet( "assets/buttons.png", options )
-	-- local spriteOptions = { name="buttons", start=1, count=6, time=1000 }
-	-- local buttons = display.newSprite( buttonsSheet, spriteOptions )
-	-- buttons.x, buttons.y = screenW/2, screenH*2/3
-	local playButton = display.newImage( "assets/btnPlay.png", screenW/2, 230 )
-	local rateButton = display.newImage( "assets/btnRate.png", screenW/2, 310 )
-
-	local function startGame( event )
-		storyboard.purgeScene( "view1" )
-		storyboard.gotoScene( "view2" )
-	end
-	playButton:addEventListener( "touch", startGame )
-
-	local function rateApp ( event )
-		rateit.openURL()
-	end
-	rateButton:addEventListener( "touch", rateApp )
+	local logo = display.newImage( "assets/logo.png", screenW/2, screenH/2 )
 
 	group:insert(bg)
 	group:insert(gradient)
 	group:insert(clouds)
-	group:insert(grass)
-	group:insert(fence)
-	group:insert(pig)
-	-- group:insert(logo)
-	group:insert(playButton)
-	group:insert(rateButton)
+	group:insert(logo)
 
 end
 
