@@ -16,6 +16,7 @@ local pigstuff = require( "pigstuff" )
 local numbers = require( "numbers" )
 local scoreboard = require( "scoreboard" )
 local medals = require( "medals" )
+local static = require( "static" )
 
 local physics = require( "physics" )
 physics.setScale( 90 )
@@ -31,30 +32,12 @@ physics.addBody( pigstuff.pigGroup, "dynamic", { radius=20, density=1.0, frictio
 
 local currentScore = 0
 
-local fence1, fence2, fence3, clouds1, clouds2, clouds3
-local stars1, stars2, stars3
-
 -- restart & share buttons
 local playButton = display.newImage( "assets/btnPlay.png", 85, 380 )
 playButton.isVisible = false
 local shareButton = display.newImage( "assets/btnShare.png", 235, 380 )
 shareButton.isVisible = false
 
-local tapToFlyOptions = {
-	width = 109,
-	height = 90,
-	numFrames = 2,
-	sheetContentWidth = 218,
-	sheetContentHeight = 90
-}
-local tapToFlySheet = graphics.newImageSheet( "assets/tooltip.png", tapToFlyOptions )
-local tapToFlySpriteOptions = { name="tapToFly", start=1, count=2, time=500 }
-local tapToFly = display.newSprite( tapToFlySheet, tapToFlySpriteOptions )
-tapToFly.x = constants.screenW/2
-tapToFly.y = constants.screenH*2/3
-tapToFly:play()
-
-local bg, grass
 local currentTheme = themes.Themes.Day
 
 -----------------------------------------------------------------------------------------
@@ -68,94 +51,25 @@ local currentTheme = themes.Themes.Day
 -- Called when the scene's view does not exist:
 function scene:createScene( event )
 	local group = self.view
-	local colors = currentTheme.Colors
-	
-	-- create a white background to fill screen
-	bg = display.newRect( 0, 0, constants.screenW, constants.screenH )
-	bg.anchorX = 0
-	bg.anchorY = 0
-	bg:setFillColor( colors.Sky.r, colors.Sky.g, colors.Sky.b )
 
-	grass = display.newRect( 0, 470, constants.screenW, 100 )
-	grass.anchorX = 0
-	grass.anchorY = 0
-	grass:setFillColor( colors.Grass.r, colors.Grass.g, colors.Grass.b )
-
-	fence1 = display.newImage( "assets/fence.png" )
-	fence1.anchorX = 0
-	fence1.anchorY = 0
-	fence1.x = 0
-	fence1.y = 438
-
-	fence2 = display.newImage( "assets/fence.png" )
-	fence2.anchorX = 0
-	fence2.anchorY = 0
-	fence2.x = 200
-	fence2.y = 438
-
-	fence3 = display.newImage( "assets/fence.png" )
-	fence3.anchorX = 0
-	fence3.anchorY = 0
-	fence3.x = 400
-	fence3.y = 438
-
-	clouds1 = display.newImage( "assets/clouds.png" )
-	clouds1.anchorX = 0
-	clouds1.anchorY = 0
-	clouds1.x = 0
-	clouds1.y = 100
-
-	clouds2 = display.newImage( "assets/clouds.png" )
-	clouds2.anchorX = 0
-	clouds2.anchorY = 0
-	clouds2.x = 400
-	clouds2.y = 200
-
-	clouds3 = display.newImage( "assets/clouds.png" )
-	clouds3.anchorX = 0
-	clouds3.anchorY = 0
-	clouds3.x = 700
-	clouds3.y = 50
-
-	stars1 = display.newImage( "assets/stars.png" )
-	stars1.anchorX = 0
-	stars1.anchorY = 0
-	stars1.x = 0
-	stars1.y = 50
-
-	stars2 = display.newImage( "assets/stars.png" )
-	stars2.anchorX = 0
-	stars2.anchorY = 0
-	stars2.x = 160
-	stars2.y = 25
-
-	stars3 = display.newImage( "assets/stars.png" )
-	stars3.anchorX = 0
-	stars3.anchorY = 0
-	stars3.x = 60
-	stars3.y = 165
-
-	stars1.isVisible, stars2.isVisible, stars3.isVisible = false, false, false
-	stars1.alpha, stars2.alpha, stars3.alpha = 0.5, 0.5, 0.5
-
-	group:insert( bg )
-	group:insert( clouds1 )
-	group:insert( clouds2 )
-	group:insert( clouds3 )
-	group:insert( stars1 )
-	group:insert( stars2 )
-	group:insert( stars3 )
-	group:insert( fence1 )
-	group:insert( fence2 )
-	group:insert( fence3 )
+	group:insert( static.bg )
+	group:insert( static.clouds1 )
+	group:insert( static.clouds2 )
+	group:insert( static.clouds3 )
+	group:insert( static.stars1 )
+	group:insert( static.stars2 )
+	group:insert( static.stars3 )
+	group:insert( static.fence1 )
+	group:insert( static.fence2 )
+	group:insert( static.fence3 )
 	group:insert( pitchfork.Up )
 	group:insert( pitchfork.Down )
 	group:insert( pitchfork.Up2 )
 	group:insert( pitchfork.Down2 )
-	group:insert( grass )
-	group:insert( tapToFly )
+	group:insert( static.grass )
+	group:insert( static.tapToFly )
 
-	physics.addBody( grass, "static", { friction=0.5, bounce=0.3 } )
+	physics.addBody( static.grass, "static", { friction=0.5, bounce=0.3 } )
 end
 
 -- Called immediately after scene has moved onscreen:
@@ -232,34 +146,34 @@ function scene:enterScene( event )
 		end
 
 		-- move fence
-		fence1.x = fence1.x - constants.FENCE_SPEED
-		if ( fence1.x <= -fence1.width ) then
-			fence1.x = fence1.width*2
+		static.fence1.x = static.fence1.x - constants.FENCE_SPEED
+		if ( static.fence1.x <= -static.fence1.width ) then
+			static.fence1.x = static.fence1.width*2
 		end
-		fence2.x = fence2.x - constants.FENCE_SPEED
-		if ( fence2.x <= -fence1.width ) then
-			fence2.x = fence2.width*2
+		static.fence2.x = static.fence2.x - constants.FENCE_SPEED
+		if ( static.fence2.x <= -static.fence1.width ) then
+			static.fence2.x = static.fence2.width*2
 		end
-		fence3.x = fence3.x - constants.FENCE_SPEED
-		if ( fence3.x <= -fence1.width ) then
-			fence3.x = fence3.width*2
+		static.fence3.x = static.fence3.x - constants.FENCE_SPEED
+		if ( static.fence3.x <= -static.fence1.width ) then
+			static.fence3.x = static.fence3.width*2
 		end
 
 		-- move clouds
-		clouds1.x = clouds1.x - constants.CLOUD_SPEED
-		if ( clouds1.x <= -clouds1.width ) then
-			clouds1.x = constants.screenW
-			clouds1.y = math.random( 50, 250 )
+		static.clouds1.x = static.clouds1.x - constants.CLOUD_SPEED
+		if ( static.clouds1.x <= -static.clouds1.width ) then
+			static.clouds1.x = constants.screenW
+			static.clouds1.y = math.random( 50, 250 )
 		end
-		clouds2.x = clouds2.x - constants.CLOUD_SPEED*2
-		if ( clouds2.x <= -clouds2.width ) then
-			clouds2.x = constants.screenW
-			clouds2.y = math.random( 50, 250 )
+		static.clouds2.x = static.clouds2.x - constants.CLOUD_SPEED*2
+		if ( static.clouds2.x <= -static.clouds2.width ) then
+			static.clouds2.x = constants.screenW
+			static.clouds2.y = math.random( 50, 250 )
 		end
-		clouds3.x = clouds3.x - constants.CLOUD_SPEED*3
-		if ( clouds3.x <= -clouds3.width ) then
-			clouds3.x = constants.screenW
-			clouds2.y = math.random( 50, 250 )
+		static.clouds3.x = static.clouds3.x - constants.CLOUD_SPEED*3
+		if ( static.clouds3.x <= -static.clouds3.width ) then
+			static.clouds3.x = constants.screenW
+			static.clouds2.y = math.random( 50, 250 )
 		end
 
 		local vx, vy = pigstuff.pigGroup:getLinearVelocity()
@@ -290,7 +204,7 @@ function scene:enterScene( event )
 				playButton.isVisible = false
 				shareButton.isVisible = false
 				storyboard.gotoScene( "view2" )
-				tapToFly.isVisible = true
+				static.tapToFly.isVisible = true
 				pigstuff.pig:pause()
 				pigstuff.pig:setFrame( 4 )
 				pigstuff.pigGroup.rotation = 0
@@ -298,12 +212,12 @@ function scene:enterScene( event )
 				local newTheme = themes.themeNames[ math.random( #themes.themeNames ) ]
 				currentTheme = themes.Themes[ newTheme ]
 				local colors = currentTheme.Colors
-				bg:setFillColor( colors.Sky.r, colors.Sky.g, colors.Sky.b )
-				grass:setFillColor( colors.Grass.r, colors.Grass.g, colors.Grass.b )
+				static.bg:setFillColor( colors.Sky.r, colors.Sky.g, colors.Sky.b )
+				static.grass:setFillColor( colors.Grass.r, colors.Grass.g, colors.Grass.b )
 				local showClouds = (newTheme ~= "Night")
 				local showStars = not showClouds
-				stars1.isVisible, stars2.isVisible, stars3.isVisible = showStars, showStars, showStars
-				clouds1.isVisible, clouds2.isVisible, clouds3.isVisible = showClouds, showClouds, showClouds
+				static.stars1.isVisible, static.stars2.isVisible, static.stars3.isVisible = showStars, showStars, showStars
+				static.clouds1.isVisible, static.clouds2.isVisible, static.clouds3.isVisible = showClouds, showClouds, showClouds
 				return true
 			end
 
@@ -317,7 +231,7 @@ function scene:enterScene( event )
 				started = true
 				physics.start()
 				pigstuff.pig:play()
-				tapToFly.isVisible = false
+				static.tapToFly.isVisible = false
 			end
 
 			pigstuff.pigGroup:setLinearVelocity( 0, constants.PIG_UPWARD_VELOCITY )
