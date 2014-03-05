@@ -6,6 +6,7 @@
 -- 
 local storyboard = require( "storyboard" )
 local scene = storyboard.newScene()
+local themes = require( "themes" )
 local physics = require( "physics" )
 physics.setScale( 90 )
 -- physics.setDrawMode( "hybrid" )
@@ -24,38 +25,6 @@ local ONE_OFFSET = 10 -- pixels offset for the "one" number
 local currentScore = 0
 
 local screenW, screenH = display.contentWidth, display.contentHeight
-
-local Themes = {
-	["Day"] = {
-		["Colors"] = {
-			["Sky"] = {
-				r = 108/255,
-				g = 233/255,
-				b = 255/255
-			},
-			["Grass"] = {
-				r = 51/255,
-				g = 204/255,
-				b = 102/255
-			}
-		}
-	},
-	["Night"] = {
-		["Colors"] = {
-			["Sky"] = {
-				r = 16/255,
-				g = 74/255,
-				b = 183/255
-			},
-			["Grass"] = {
-				r = 0/255,
-				g = 142/255,
-				b = 70/255
-			}
-		}
-	}
-}
-local themeNames = {"Day", "Night"} -- kid cudi
 
 -- initialization goes here (TODO: refactor)
 
@@ -250,7 +219,7 @@ local function getScore()
 end
 
 local bg, grass
-local currentTheme = Themes.Day
+local currentTheme = themes.Themes.Day
 
 -----------------------------------------------------------------------------------------
 -- BEGINNING OF YOUR IMPLEMENTATION
@@ -321,7 +290,7 @@ function scene:createScene( event )
 	stars2 = display.newImage( "assets/stars.png" )
 	stars2.anchorX = 0
 	stars2.anchorY = 0
-	stars2.x = 150
+	stars2.x = 160
 	stars2.y = 25
 
 	stars3 = display.newImage( "assets/stars.png" )
@@ -330,9 +299,8 @@ function scene:createScene( event )
 	stars3.x = 60
 	stars3.y = 165
 
-	stars1.isVisible = false
-	stars2.isVisible = false
-	stars3.isVisible = false
+	stars1.isVisible, stars2.isVisible, stars3.isVisible = false, false, false
+	stars1.alpha, stars2.alpha, stars3.alpha = 0.5, 0.5, 0.5
 
 	group:insert( bg )
 	group:insert( clouds1 )
@@ -491,12 +459,12 @@ function scene:enterScene( event )
 				pig:setFrame( 4 )
 				pigGroup.rotation = 0
 				-- pick random theme
-				local newTheme = themeNames[ math.random( #themeNames ) ]
-				currentTheme = Themes[ newTheme ]
+				local newTheme = themes.themeNames[ math.random( #themes.themeNames ) ]
+				currentTheme = themes.Themes[ newTheme ]
 				local colors = currentTheme.Colors
 				bg:setFillColor( colors.Sky.r, colors.Sky.g, colors.Sky.b )
 				grass:setFillColor( colors.Grass.r, colors.Grass.g, colors.Grass.b )
-				local showClouds = (newTheme == "Day")
+				local showClouds = (newTheme ~= "Night")
 				local showStars = not showClouds
 				stars1.isVisible, stars2.isVisible, stars3.isVisible = showStars, showStars, showStars
 				clouds1.isVisible, clouds2.isVisible, clouds3.isVisible = showClouds, showClouds, showClouds
