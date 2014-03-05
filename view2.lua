@@ -137,14 +137,6 @@ function scene:enterScene( event )
 			resetPitchforks(pitchfork.Up2, pitchfork.Down2, pitchfork.Down.x)
 		end
 
-		-- check for +1 score
-		if ((pitchfork.Down.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down.x <= constants.origX+constants.PITCHFORK_SPEED/2) or 
-			(pitchfork.Down2.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down2.x <= constants.origX+constants.PITCHFORK_SPEED/2)) then
-			currentScore = math.min(999, currentScore + 1)
-			setScore(currentScore, numbers.ones, numbers.tens, numbers.hundreds)
-			audio.play( sounds.coinSound )
-		end
-
 		-- move fence
 		static.fence1.x = static.fence1.x - constants.FENCE_SPEED
 		if ( static.fence1.x <= -static.fence1.width ) then
@@ -163,19 +155,28 @@ function scene:enterScene( event )
 		static.clouds1.x = static.clouds1.x - constants.CLOUD_SPEED
 		if ( static.clouds1.x <= -static.clouds1.width ) then
 			static.clouds1.x = constants.screenW
-			static.clouds1.y = math.random( 50, 250 )
+			-- static.clouds1.y = math.random( 50, 250 )
 		end
 		static.clouds2.x = static.clouds2.x - constants.CLOUD_SPEED*2
 		if ( static.clouds2.x <= -static.clouds2.width ) then
 			static.clouds2.x = constants.screenW
-			static.clouds2.y = math.random( 50, 250 )
+			-- static.clouds2.y = math.random( 50, 250 )
 		end
 		static.clouds3.x = static.clouds3.x - constants.CLOUD_SPEED*3
 		if ( static.clouds3.x <= -static.clouds3.width ) then
 			static.clouds3.x = constants.screenW
-			static.clouds2.y = math.random( 50, 250 )
+			-- static.clouds2.y = math.random( 50, 250 )
 		end
 
+		-- check for +1 score
+		if ((pitchfork.Down.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down.x <= constants.origX+constants.PITCHFORK_SPEED/2) or 
+			(pitchfork.Down2.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down2.x <= constants.origX+constants.PITCHFORK_SPEED/2)) then
+			currentScore = math.min(999, currentScore + 1)
+			setScore(currentScore, numbers.ones, numbers.tens, numbers.hundreds)
+			audio.play( sounds.coinSound )
+		end
+
+		-- move/rotate the pig
 		local vx, vy = pigstuff.pigGroup:getLinearVelocity()
 		pigstuff.pigGroup.rotation = math.min( vy / constants.ROTATION_RATIO - 10, 90 )
 
