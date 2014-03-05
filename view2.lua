@@ -467,26 +467,6 @@ function scene:enterScene( event )
 		
 	end
 
-	local function shareButtonListener( event )
-		-- local options = {
-		-- 	service = "facebook",
-		-- 	message = "Check out this photo!",
-		-- 	listener = eventListener,
-		-- 	image = {
-		-- 		{ filename = "pic.jpg", baseDir = system.ResourceDirectory },
-		-- 		{ filename = "pic2.jpg", baseDir = system.ResourceDirectory }
-		-- 	},
-		-- 	url = "http://coronalabs.com"
-		-- }
-
-		-- native.showPopup( "social", options )
-	end
-
-	-- local function playButtonListener( event )
-	-- 	storyboard.purgeScene( "view2" )
-	-- 	storyboard.gotoScene( "view1" )
-	-- end
-
 	local function screenTouchListener( event )
 		if ( event.phase == "began" ) then
 			if gameOver then
@@ -615,7 +595,6 @@ function scene:enterScene( event )
 					medals.isVisible = true
 
 					playButton:addEventListener( "touch", screenTouchListener )
-					shareButton:addEventListener( "touch", shareButtonListener )
 				end
 
 				timer.performWithDelay( 1000, showScoreboard )
