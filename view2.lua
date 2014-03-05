@@ -17,8 +17,6 @@ physics.setGravity( 0, 15 )
 
 local currentScore = 0
 
-local screenW, screenH = display.contentWidth, display.contentHeight
-
 -- initialization goes here (TODO: refactor)
 
 local pigOptions = {
@@ -38,9 +36,6 @@ local pig = display.newSprite( pigGroup, pigSheet, pigSpriteOptions )
 pig:setFrame( 4 )
 deadPig.isVisible = false
 
-local origX = screenW / 4
-local origY = screenH / 3
-
 -- local pigShape = { 12,26, 26,10, 32,6, 32,-4, 16,-18, -6,-18, -16,-6, -10,16 }
 
 local pitchforkOptions = {
@@ -55,19 +50,19 @@ local pitchforkSheet = graphics.newImageSheet( "assets/pitchfork.png", pitchfork
 local pitchforkDown = display.newImage( pitchforkSheet, 2 )
 pitchforkDown.anchorX = 0
 pitchforkDown.anchorY = 0
-pitchforkDown.x = screenW
+pitchforkDown.x = constants.screenW
 pitchforkDown.y = -300
 
 local pitchforkUp = display.newImage( pitchforkSheet, 1 )
 pitchforkUp.anchorX = 0
 pitchforkUp.anchorY = 0
-pitchforkUp.x = screenW
+pitchforkUp.x = constants.screenW
 pitchforkUp.y = pitchforkDown.y + 620
 
 local pitchforkDown2 = display.newImage( pitchforkSheet, 2 )
 pitchforkDown2.anchorX = 0
 pitchforkDown2.anchorY = 0
-pitchforkDown2.x = pitchforkDown.x + (screenW / 2) + pitchforkDown2.contentWidth
+pitchforkDown2.x = pitchforkDown.x + (constants.screenW / 2) + pitchforkDown2.contentWidth
 pitchforkDown2.y = -300
 
 local pitchforkUp2 = display.newImage( pitchforkSheet, 1 )
@@ -100,9 +95,9 @@ hundreds.anchorX, hundreds.anchorY, tens.anchorX, tens.anchorY, ones.anchorX, on
 tens.isVisible = false
 hundreds.isVisible = false
 ones.y, tens.y, hundreds.y = 20, 20, 20
-local onesPos = screenW/2 - constants.NUMBER_WIDTH*1 + constants.NUMBER_WIDTH/2
-local tensPos = screenW/2 - constants.NUMBER_WIDTH*2 + constants.NUMBER_WIDTH/2
-local hundredsPos =  screenW/2 - constants.NUMBER_WIDTH*3 + constants.NUMBER_WIDTH/2
+local onesPos = constants.screenW/2 - constants.NUMBER_WIDTH*1 + constants.NUMBER_WIDTH/2
+local tensPos = constants.screenW/2 - constants.NUMBER_WIDTH*2 + constants.NUMBER_WIDTH/2
+local hundredsPos =  constants.screenW/2 - constants.NUMBER_WIDTH*3 + constants.NUMBER_WIDTH/2
 hundreds.x = hundredsPos
 tens.x = tensPos
 ones.x = onesPos
@@ -112,7 +107,7 @@ local scoreboardOptions = { frames = require("scoreboard").frames, sheetContentW
 local scoreboardSheet = graphics.newImageSheet( "assets/scoreboard.png", scoreboardOptions )
 local scoreboardSpriteOptions = { name="scoreboard", start=1, count=2, time=500 }
 local scoreboard = display.newSprite( scoreboardSheet, scoreboardSpriteOptions )
-scoreboard.x, scoreboard.y = screenW/2, screenH/2 - 40
+scoreboard.x, scoreboard.y = constants.screenW/2, constants.screenH/2 - 40
 scoreboard.isVisible = false
 
 -- high score numbers sprite
@@ -123,9 +118,9 @@ highHundreds.anchorX, highHundreds.anchorY, highTens.anchorX, highTens.anchorY, 
 highOnes.isVisible = false
 highTens.isVisible = false
 highHundreds.isVisible = false
--- local highHeight = screenH/2 + 37
+-- local highHeight = constants.screenH/2 + 37
 highOnes.y, highTens.y, highHundreds.y = ones.y, tens.y, hundreds.y
--- local highWidth = screenW/2 - 60
+-- local highWidth = constants.screenW/2 - 60
 highHundreds.x, highTens.x, highOnes.x = ones.x, tens.x, hundreds.x
 
 -- score group
@@ -153,7 +148,7 @@ local medalsOptions = {
 local medalsSheet = graphics.newImageSheet( "assets/medals.png", medalsOptions )
 local medalsSpriteOptions = { name="medals", start=1, count=5, time=500 }
 local medals = display.newSprite( medalsSheet, medalsSpriteOptions )
-medals.x, medals.y = screenW/2 + 60, screenH/2 - 25
+medals.x, medals.y = constants.screenW/2 + 60, constants.screenH/2 - 25
 medals.isVisible = false
 
 -- restart & share buttons
@@ -172,8 +167,8 @@ local tapToFlyOptions = {
 local tapToFlySheet = graphics.newImageSheet( "assets/tooltip.png", tapToFlyOptions )
 local tapToFlySpriteOptions = { name="tapToFly", start=1, count=2, time=500 }
 local tapToFly = display.newSprite( tapToFlySheet, tapToFlySpriteOptions )
-tapToFly.x = screenW/2
-tapToFly.y = screenH*2/3
+tapToFly.x = constants.screenW/2
+tapToFly.y = constants.screenH*2/3
 tapToFly:play()
 
 local bg, grass
@@ -193,12 +188,12 @@ function scene:createScene( event )
 	local colors = currentTheme.Colors
 	
 	-- create a white background to fill screen
-	bg = display.newRect( 0, 0, screenW, screenH )
+	bg = display.newRect( 0, 0, constants.screenW, constants.screenH )
 	bg.anchorX = 0
 	bg.anchorY = 0
 	bg:setFillColor( colors.Sky.r, colors.Sky.g, colors.Sky.b )
 
-	grass = display.newRect( 0, 470, screenW, 100 )
+	grass = display.newRect( 0, 470, constants.screenW, 100 )
 	grass.anchorX = 0
 	grass.anchorY = 0
 	grass:setFillColor( colors.Grass.r, colors.Grass.g, colors.Grass.b )
@@ -286,7 +281,7 @@ function scene:enterScene( event )
 	local started = false
 	local gameOver = false
 
-	local screenButton = display.newRect( 0, 0, screenW, screenH )
+	local screenButton = display.newRect( 0, 0, constants.screenW, constants.screenH )
 	screenButton.anchorX = 0
 	screenButton.anchorY = 0
 	screenButton:setFillColor( 1, 0.01 )
@@ -294,7 +289,7 @@ function scene:enterScene( event )
 	physics.pause()
 
 	local function resetPitchforks(upFork, downFork, startPos)
-		downFork.x = startPos + screenW/2 + downFork.contentWidth
+		downFork.x = startPos + constants.screenW/2 + downFork.contentWidth
 		upFork.x = downFork.x
 
 		-- randomize the position
@@ -346,8 +341,8 @@ function scene:enterScene( event )
 		end
 
 		-- check for +1 score
-		if ((pitchforkDown.x > origX-constants.PITCHFORK_SPEED/2 and pitchforkDown.x <= origX+constants.PITCHFORK_SPEED/2) or 
-			(pitchforkDown2.x > origX-constants.PITCHFORK_SPEED/2 and pitchforkDown2.x <= origX+constants.PITCHFORK_SPEED/2)) then
+		if ((pitchforkDown.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchforkDown.x <= constants.origX+constants.PITCHFORK_SPEED/2) or 
+			(pitchforkDown2.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchforkDown2.x <= constants.origX+constants.PITCHFORK_SPEED/2)) then
 			currentScore = math.min(999, currentScore + 1)
 			setScore(currentScore, ones, tens, hundreds)
 			audio.play( coinSound )
@@ -370,17 +365,17 @@ function scene:enterScene( event )
 		-- move clouds
 		clouds1.x = clouds1.x - constants.CLOUD_SPEED
 		if ( clouds1.x <= -clouds1.width ) then
-			clouds1.x = screenW
+			clouds1.x = constants.screenW
 			clouds1.y = math.random( 50, 250 )
 		end
 		clouds2.x = clouds2.x - constants.CLOUD_SPEED*2
 		if ( clouds2.x <= -clouds2.width ) then
-			clouds2.x = screenW
+			clouds2.x = constants.screenW
 			clouds2.y = math.random( 50, 250 )
 		end
 		clouds3.x = clouds3.x - constants.CLOUD_SPEED*3
 		if ( clouds3.x <= -clouds3.width ) then
-			clouds3.x = screenW
+			clouds3.x = constants.screenW
 			clouds2.y = math.random( 50, 250 )
 		end
 
@@ -397,7 +392,7 @@ function scene:enterScene( event )
 		if ( event.phase == "began" ) then
 			if gameOver then
 				gameOver = false
-				resetPitchforks(pitchforkUp, pitchforkDown, screenW)
+				resetPitchforks(pitchforkUp, pitchforkDown, constants.screenW)
 				resetPitchforks(pitchforkUp2, pitchforkDown2, pitchforkDown.x)
 				currentScore = 0
 				setScore(currentScore, ones, tens, hundreds)
@@ -487,7 +482,7 @@ function scene:enterScene( event )
 					scoreGroup.anchorX = 0
 					scoreGroup.anchorY = 0
 					scoreGroup.anchorChildren = true
-					scoreGroup.y = screenH/2 - 37 - ones.y
+					scoreGroup.y = constants.screenH/2 - 37 - ones.y
 					scoreGroup.x = 60
 					if currentScore >= 100 and hundredsDigit ~= 1 then
 						scoreGroup.x = scoreGroup.x + 2
@@ -503,7 +498,7 @@ function scene:enterScene( event )
 
 					-- show the high score
 					setScore(highScore, highOnes, highTens, highHundreds)
-					highscoreGroup.y = screenH/2 + 5
+					highscoreGroup.y = constants.screenH/2 + 5
 					highscoreGroup.x = 60
 					highscoreGroup.isVisible = true
 					if highScore >= 100 and hundredsDigit ~= 1 then
@@ -535,8 +530,8 @@ function scene:enterScene( event )
 	pigGroup.collision = onPigCollision
 	pigGroup:addEventListener( "collision", pigGroup )
 
-	pigGroup.x = origX
-	pigGroup.y = origY
+	pigGroup.x = constants.origX
+	pigGroup.y = constants.origY
 	Runtime:addEventListener( "enterFrame", moveThePig )
 
 	screenButton:addEventListener( "touch", screenTouchListener )

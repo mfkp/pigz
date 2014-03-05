@@ -1,6 +1,10 @@
 local R = {}
 
 R.isAndroid = system.getInfo( "platformName" ) == "Android"
+R.screenW = display.contentWidth
+R.screenH = display.contentHeight
+R.origX = R.screenW / 4
+R.origY = R.screenH / 3
 
 R.PIG_UPWARD_VELOCITY = -400
 R.ROTATION_RATIO = R.PIG_UPWARD_VELOCITY / -20
