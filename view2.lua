@@ -11,8 +11,10 @@ local score = require( "score" )
 local constants = require( "constants" )
 local pitchfork = require( "pitchfork" )
 local sounds = require( "sounds" )
-local physics = require( "physics" )
 local numbers = require( "numbers" )
+local scoreboard = require( "scoreboard" )
+
+local physics = require( "physics" )
 physics.setScale( 90 )
 -- physics.setDrawMode( "hybrid" )
 physics.start()
@@ -49,19 +51,6 @@ physics.addBody( pigGroup, "dynamic", { radius=20, density=1.0, friction=1, boun
 
 local fence1, fence2, fence3, clouds1, clouds2, clouds3
 local stars1, stars2, stars3
-
-
-
-
-
-
--- scoreboard
-local scoreboardOptions = { frames = require("scoreboard").frames, sheetContentWidth=460, sheetContentHeight=171 }
-local scoreboardSheet = graphics.newImageSheet( "assets/scoreboard.png", scoreboardOptions )
-local scoreboardSpriteOptions = { name="scoreboard", start=1, count=2, time=500 }
-local scoreboard = display.newSprite( scoreboardSheet, scoreboardSpriteOptions )
-scoreboard.x, scoreboard.y = constants.screenW/2, constants.screenH/2 - 40
-scoreboard.isVisible = false
 
 
 
