@@ -9,6 +9,8 @@ local scene = storyboard.newScene()
 local themes = require( "themes" )
 local score = require( "score" )
 local constants = require( "constants" )
+local pitchfork = require( "pitchfork" )
+local sounds = require( "sounds" )
 local physics = require( "physics" )
 physics.setScale( 90 )
 -- physics.setDrawMode( "hybrid" )
@@ -38,51 +40,16 @@ deadPig.isVisible = false
 
 -- local pigShape = { 12,26, 26,10, 32,6, 32,-4, 16,-18, -6,-18, -16,-6, -10,16 }
 
-local pitchforkOptions = {
-    width = 54,
-    height = 500,
-    numFrames = 2,
-    sheetContentWidth = 108, 
-    sheetContentHeight = 500
-}
-local pitchforkSheet = graphics.newImageSheet( "assets/pitchfork.png", pitchforkOptions )
-
-local pitchforkDown = display.newImage( pitchforkSheet, 2 )
-pitchforkDown.anchorX = 0
-pitchforkDown.anchorY = 0
-pitchforkDown.x = constants.screenW
-pitchforkDown.y = -300
-
-local pitchforkUp = display.newImage( pitchforkSheet, 1 )
-pitchforkUp.anchorX = 0
-pitchforkUp.anchorY = 0
-pitchforkUp.x = constants.screenW
-pitchforkUp.y = pitchforkDown.y + 620
-
-local pitchforkDown2 = display.newImage( pitchforkSheet, 2 )
-pitchforkDown2.anchorX = 0
-pitchforkDown2.anchorY = 0
-pitchforkDown2.x = pitchforkDown.x + (constants.screenW / 2) + pitchforkDown2.contentWidth
-pitchforkDown2.y = -300
-
-local pitchforkUp2 = display.newImage( pitchforkSheet, 1 )
-pitchforkUp2.anchorX = 0
-pitchforkUp2.anchorY = 0
-pitchforkUp2.x = pitchforkDown2.x
-pitchforkUp2.y = pitchforkDown2.y + 620
-
-physics.addBody( pitchforkDown, "static", { friction=1, bounce=0.6 } )
-physics.addBody( pitchforkUp, "static", { friction=1, bounce=0.6 } )
-physics.addBody( pitchforkDown2, "static", { friction=1, bounce=0.6 } )
-physics.addBody( pitchforkUp2, "static", { friction=1, bounce=0.6 } )
+physics.addBody( pitchfork.Down, "static", { friction=1, bounce=0.6 } )
+physics.addBody( pitchfork.Up, "static", { friction=1, bounce=0.6 } )
+physics.addBody( pitchfork.Down2, "static", { friction=1, bounce=0.6 } )
+physics.addBody( pitchfork.Up2, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pigGroup, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
 
 local fence1, fence2, fence3, clouds1, clouds2, clouds3
 local stars1, stars2, stars3
 
-local flapSound = audio.loadSound( "assets/sounds/flap.mp3" )
-local oinkSound = audio.loadSound( "assets/sounds/oink.mp3" )
-local coinSound = audio.loadSound( "assets/sounds/coin.mp3" )
+
 
 -- numbers sprite
 local options = { frames = require("numbers").frames, sheetContentWidth=250, sheetContentHeight=26 }
@@ -265,10 +232,10 @@ function scene:createScene( event )
 	group:insert( fence1 )
 	group:insert( fence2 )
 	group:insert( fence3 )
-	group:insert( pitchforkUp )
-	group:insert( pitchforkDown )
-	group:insert( pitchforkUp2 )
-	group:insert( pitchforkDown2 )
+	group:insert( pitchfork.Up )
+	group:insert( pitchfork.Down )
+	group:insert( pitchfork.Up2 )
+	group:insert( pitchfork.Down2 )
 	group:insert( grass )
 	group:insert( tapToFly )
 
@@ -328,24 +295,24 @@ function scene:enterScene( event )
 		end
 
 		-- move pitchforks
-		pitchforkDown.x = pitchforkDown.x - constants.PITCHFORK_SPEED
-		pitchforkUp.x = pitchforkDown.x
-		if ( pitchforkDown.x < 0 - pitchforkDown.contentWidth ) then
-			resetPitchforks(pitchforkUp, pitchforkDown, pitchforkDown2.x)
+		pitchfork.Down.x = pitchfork.Down.x - constants.PITCHFORK_SPEED
+		pitchfork.Up.x = pitchfork.Down.x
+		if ( pitchfork.Down.x < 0 - pitchfork.Down.contentWidth ) then
+			resetPitchforks(pitchfork.Up, pitchfork.Down, pitchfork.Down2.x)
 		end
 
-		pitchforkDown2.x = pitchforkDown2.x - constants.PITCHFORK_SPEED
-		pitchforkUp2.x = pitchforkDown2.x
-		if ( pitchforkDown2.x < 0 - pitchforkDown2.contentWidth ) then
-			resetPitchforks(pitchforkUp2, pitchforkDown2, pitchforkDown.x)
+		pitchfork.Down2.x = pitchfork.Down2.x - constants.PITCHFORK_SPEED
+		pitchfork.Up2.x = pitchfork.Down2.x
+		if ( pitchfork.Down2.x < 0 - pitchfork.Down2.contentWidth ) then
+			resetPitchforks(pitchfork.Up2, pitchfork.Down2, pitchfork.Down.x)
 		end
 
 		-- check for +1 score
-		if ((pitchforkDown.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchforkDown.x <= constants.origX+constants.PITCHFORK_SPEED/2) or 
-			(pitchforkDown2.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchforkDown2.x <= constants.origX+constants.PITCHFORK_SPEED/2)) then
+		if ((pitchfork.Down.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down.x <= constants.origX+constants.PITCHFORK_SPEED/2) or 
+			(pitchfork.Down2.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down2.x <= constants.origX+constants.PITCHFORK_SPEED/2)) then
 			currentScore = math.min(999, currentScore + 1)
 			setScore(currentScore, ones, tens, hundreds)
-			audio.play( coinSound )
+			audio.play( sounds.coinSound )
 		end
 
 		-- move fence
@@ -392,8 +359,8 @@ function scene:enterScene( event )
 		if ( event.phase == "began" ) then
 			if gameOver then
 				gameOver = false
-				resetPitchforks(pitchforkUp, pitchforkDown, constants.screenW)
-				resetPitchforks(pitchforkUp2, pitchforkDown2, pitchforkDown.x)
+				resetPitchforks(pitchfork.Up, pitchfork.Down, constants.screenW)
+				resetPitchforks(pitchfork.Up2, pitchfork.Down2, pitchfork.Down.x)
 				currentScore = 0
 				setScore(currentScore, ones, tens, hundreds)
 				deadPig.isVisible = false
@@ -426,9 +393,9 @@ function scene:enterScene( event )
 
 			if started then
 				if constants.isAndroid then
-					media.playSound( 'assets/sounds/flap.mp3' )
+					media.playSound( sounds.flapPath )
 				else
-					audio.play( flapSound )
+					audio.play( sounds.flapSound )
 				end
 			else
 				started = true
@@ -452,9 +419,9 @@ function scene:enterScene( event )
 				started = false
 
 				if constants.isAndroid then
-					media.playSound( 'assets/sounds/oink.mp3' )
+					media.playSound( sounds.oinkPath )
 				else
-					audio.play( oinkSound )
+					audio.play( sounds.oinkSound )
 				end
 				
 				-- swap out live pig for dead pig
