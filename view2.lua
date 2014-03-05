@@ -6,6 +6,7 @@
 -- 
 local storyboard = require( "storyboard" )
 local scene = storyboard.newScene()
+
 local themes = require( "themes" )
 local score = require( "score" )
 local constants = require( "constants" )
@@ -52,21 +53,6 @@ physics.addBody( pigGroup, "dynamic", { radius=20, density=1.0, friction=1, boun
 local fence1, fence2, fence3, clouds1, clouds2, clouds3
 local stars1, stars2, stars3
 
-
-
--- score group
-local scoreGroup = display.newGroup()
-scoreGroup:insert( numbers.ones )
-scoreGroup:insert( numbers.tens )
-scoreGroup:insert( numbers.hundreds )
-
-local highscoreGroup = display.newGroup()
-highscoreGroup.anchorX = 0
-highscoreGroup.anchorY = 0
-highscoreGroup.anchorChildren = true
-highscoreGroup:insert( numbers.highOnes )
-highscoreGroup:insert( numbers.highTens )
-highscoreGroup:insert( numbers.highHundreds )
 
 -- medals sprite
 local medalsOptions = {
@@ -329,11 +315,11 @@ function scene:enterScene( event )
 				setScore(currentScore, numbers.ones, numbers.tens, numbers.hundreds)
 				deadPig.isVisible = false
 				pig.isVisible = true
-				scoreGroup.anchorChildren = false
-				scoreGroup.y = 0
-				scoreGroup.x = 0
-				scoreboard.isVisible = false
-				highscoreGroup.isVisible = false
+				scoreboard.scoreGroup.anchorChildren = false
+				scoreboard.scoreGroup.y = 0
+				scoreboard.scoreGroup.x = 0
+				scoreboard.scoreboard.isVisible = false
+				scoreboard.highscoreGroup.isVisible = false
 				medals.isVisible = false
 				playButton.isVisible = false
 				shareButton.isVisible = false
@@ -403,43 +389,43 @@ function scene:enterScene( event )
 					if currentScore > highScore then
 						score.writeScore(currentScore)
 						highScore = currentScore
-						scoreboard:setFrame( 2 )
+						scoreboard.scoreboard:setFrame( 2 )
 					else
-						scoreboard:setFrame( 1 )
+						scoreboard.scoreboard:setFrame( 1 )
 					end
 
 					-- show the scoreboard and current score
-					scoreboard.isVisible = true
-					scoreGroup.anchorX = 0
-					scoreGroup.anchorY = 0
-					scoreGroup.anchorChildren = true
-					scoreGroup.y = constants.screenH/2 - 37 - numbers.ones.y
-					scoreGroup.x = 60
+					scoreboard.scoreboard.isVisible = true
+					scoreboard.scoreGroup.anchorX = 0
+					scoreboard.scoreGroup.anchorY = 0
+					scoreboard.scoreGroup.anchorChildren = true
+					scoreboard.scoreGroup.y = constants.screenH/2 - 37 - numbers.ones.y
+					scoreboard.scoreGroup.x = 60
 					if currentScore >= 100 and hundredsDigit ~= 1 then
-						scoreGroup.x = scoreGroup.x + 2
+						scoreboard.scoreGroup.x = scoreboard.scoreGroup.x + 2
 					end
 					if currentScore < 100 then
-						scoreGroup.x = scoreGroup.x - constants.NUMBER_WIDTH
+						scoreboard.scoreGroup.x = scoreboard.scoreGroup.x - constants.NUMBER_WIDTH
 					end
 					if currentScore < 10 then
-						scoreGroup.x = scoreGroup.x - constants.NUMBER_WIDTH
+						scoreboard.scoreGroup.x = scoreboard.scoreGroup.x - constants.NUMBER_WIDTH
 					end
 
 					
 
 					-- show the high score
 					setScore(highScore, numbers.highOnes, numbers.highTens, numbers.highHundreds)
-					highscoreGroup.y = constants.screenH/2 + 5
-					highscoreGroup.x = 60
-					highscoreGroup.isVisible = true
+					scoreboard.highscoreGroup.y = constants.screenH/2 + 5
+					scoreboard.highscoreGroup.x = 60
+					scoreboard.highscoreGroup.isVisible = true
 					if highScore >= 100 and hundredsDigit ~= 1 then
-						highscoreGroup.x = highscoreGroup.x + 2
+						scoreboard.highscoreGroup.x = scoreboard.highscoreGroup.x + 2
 					end
 					if highScore < 100 then
-						highscoreGroup.x = highscoreGroup.x - constants.NUMBER_WIDTH
+						scoreboard.highscoreGroup.x = scoreboard.highscoreGroup.x - constants.NUMBER_WIDTH
 					end
 					if highScore < 10 then
-						highscoreGroup.x = highscoreGroup.x - constants.NUMBER_WIDTH
+						scoreboard.highscoreGroup.x = scoreboard.highscoreGroup.x - constants.NUMBER_WIDTH
 					end
 
 					-- show the correct medal based on score
