@@ -12,8 +12,10 @@ local score = require( "score" )
 local constants = require( "constants" )
 local pitchfork = require( "pitchfork" )
 local sounds = require( "sounds" )
+local pigstuff = require( "pigstuff" )
 local numbers = require( "numbers" )
 local scoreboard = require( "scoreboard" )
+local medals = require( "medals" )
 
 local physics = require( "physics" )
 physics.setScale( 90 )
@@ -21,52 +23,16 @@ physics.setScale( 90 )
 physics.start()
 physics.setGravity( 0, 15 )
 
-local currentScore = 0
-
--- initialization goes here (TODO: refactor)
-
-local pigOptions = {
-	width = 65,
-	height = 44,
-	numFrames = 4,
-	sheetContentWidth = 260,
-	sheetContentHeight = 44
-}
-local pigSheet = graphics.newImageSheet( "assets/pigs.png", pigOptions )
-local pigSpriteOptions = { name="pig", start=1, count=4, time=250 }
-
--- Create a basic display group
-local pigGroup = display.newGroup()
-local deadPig = display.newImage( pigGroup, "assets/dead.png" )
-local pig = display.newSprite( pigGroup, pigSheet, pigSpriteOptions )
-pig:setFrame( 4 )
-deadPig.isVisible = false
-
--- local pigShape = { 12,26, 26,10, 32,6, 32,-4, 16,-18, -6,-18, -16,-6, -10,16 }
-
 physics.addBody( pitchfork.Down, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pitchfork.Up, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pitchfork.Down2, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pitchfork.Up2, "static", { friction=1, bounce=0.6 } )
-physics.addBody( pigGroup, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
+physics.addBody( pigstuff.pigGroup, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
+
+local currentScore = 0
 
 local fence1, fence2, fence3, clouds1, clouds2, clouds3
 local stars1, stars2, stars3
-
-
--- medals sprite
-local medalsOptions = {
-	width = 64,
-	height = 90,
-	numFrames = 5,
-	sheetContentWidth = 320, 
-	sheetContentHeight = 90
-}
-local medalsSheet = graphics.newImageSheet( "assets/medals.png", medalsOptions )
-local medalsSpriteOptions = { name="medals", start=1, count=5, time=500 }
-local medals = display.newSprite( medalsSheet, medalsSpriteOptions )
-medals.x, medals.y = constants.screenW/2 + 60, constants.screenH/2 - 25
-medals.isVisible = false
 
 -- restart & share buttons
 local playButton = display.newImage( "assets/btnPlay.png", 85, 380 )
@@ -296,11 +262,11 @@ function scene:enterScene( event )
 			clouds2.y = math.random( 50, 250 )
 		end
 
-		local vx, vy = pigGroup:getLinearVelocity()
-		pigGroup.rotation = math.min( vy / constants.ROTATION_RATIO - 10, 90 )
+		local vx, vy = pigstuff.pigGroup:getLinearVelocity()
+		pigstuff.pigGroup.rotation = math.min( vy / constants.ROTATION_RATIO - 10, 90 )
 
-		if (pigGroup.y < 0) then
-			pigGroup.y = 0
+		if (pigstuff.pigGroup.y < 0) then
+			pigstuff.pigGroup.y = 0
 		end
 		
 	end
@@ -313,8 +279,8 @@ function scene:enterScene( event )
 				resetPitchforks(pitchfork.Up2, pitchfork.Down2, pitchfork.Down.x)
 				currentScore = 0
 				setScore(currentScore, numbers.ones, numbers.tens, numbers.hundreds)
-				deadPig.isVisible = false
-				pig.isVisible = true
+				pigstuff.deadPig.isVisible = false
+				pigstuff.pig.isVisible = true
 				scoreboard.scoreGroup.anchorChildren = false
 				scoreboard.scoreGroup.y = 0
 				scoreboard.scoreGroup.x = 0
@@ -325,9 +291,9 @@ function scene:enterScene( event )
 				shareButton.isVisible = false
 				storyboard.gotoScene( "view2" )
 				tapToFly.isVisible = true
-				pig:pause()
-				pig:setFrame( 4 )
-				pigGroup.rotation = 0
+				pigstuff.pig:pause()
+				pigstuff.pig:setFrame( 4 )
+				pigstuff.pigGroup.rotation = 0
 				-- pick random theme
 				local newTheme = themes.themeNames[ math.random( #themes.themeNames ) ]
 				currentTheme = themes.Themes[ newTheme ]
@@ -350,11 +316,11 @@ function scene:enterScene( event )
 			else
 				started = true
 				physics.start()
-				pig:play()
+				pigstuff.pig:play()
 				tapToFly.isVisible = false
 			end
 
-			pigGroup:setLinearVelocity( 0, constants.PIG_UPWARD_VELOCITY )
+			pigstuff.pigGroup:setLinearVelocity( 0, constants.PIG_UPWARD_VELOCITY )
 			
 		end
 		return true  --prevents touch propagation to underlying objects
@@ -374,9 +340,9 @@ function scene:enterScene( event )
 					audio.play( sounds.oinkSound )
 				end
 				
-				-- swap out live pig for dead pig
-				deadPig.isVisible = true
-				pig.isVisible = false
+				-- swap out live pigstuff.pig for dead pigstuff.pig
+				pigstuff.deadPig.isVisible = true
+				pigstuff.pig.isVisible = false
 
 				screenButton:removeEventListener( "touch", screenTouchListener )
 
@@ -444,11 +410,11 @@ function scene:enterScene( event )
 		end
 	end
 
-	pigGroup.collision = onPigCollision
-	pigGroup:addEventListener( "collision", pigGroup )
+	pigstuff.pigGroup.collision = onPigCollision
+	pigstuff.pigGroup:addEventListener( "collision", pigstuff.pigGroup )
 
-	pigGroup.x = constants.origX
-	pigGroup.y = constants.origY
+	pigstuff.pigGroup.x = constants.origX
+	pigstuff.pigGroup.y = constants.origY
 	Runtime:addEventListener( "enterFrame", moveThePig )
 
 	screenButton:addEventListener( "touch", screenTouchListener )
