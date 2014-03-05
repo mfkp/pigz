@@ -29,8 +29,8 @@ local function getScore()
 		return score
 	else
 		print( "Error: could not read scores from file." )
-		writeScore( currentScore )
-		return 0
+		writeScore( _G.currentScore )
+		return _G.currentScore
 	end
 	return nil
 end

@@ -7,16 +7,18 @@
 local storyboard = require( "storyboard" )
 local scene = storyboard.newScene()
 
+_G.currentScore = 0
+
 local themes = require( "themes" )
 local score = require( "score" )
 local constants = require( "constants" )
+local static = require( "static" )
 local pitchfork = require( "pitchfork" )
 local sounds = require( "sounds" )
 local pigstuff = require( "pigstuff" )
 local numbers = require( "numbers" )
 local scoreboard = require( "scoreboard" )
 local medals = require( "medals" )
-local static = require( "static" )
 
 local physics = require( "physics" )
 physics.setScale( 90 )
@@ -30,8 +32,6 @@ physics.addBody( pitchfork.Down2, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pitchfork.Up2, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pigstuff.pigGroup, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
 physics.addBody( static.grass, "static", { friction=0.5, bounce=0.3 } )
-
-local currentScore = 0
 
 local currentTheme = themes.Themes.Day
 
@@ -64,7 +64,7 @@ function scene:createScene( event )
 	group:insert( static.grass )
 	group:insert( static.tapToFly )
 	group:insert( pigstuff.pigGroup )
-	group:insert( scoreboard.scoreboard )
+	group:insert( scoreboard.scoreBoard )
 	group:insert( scoreboard.scoreGroup )
 	group:insert( scoreboard.highscoreGroup )
 	group:insert( medals )
@@ -171,8 +171,8 @@ function scene:enterScene( event )
 		-- check for +1 score
 		if ((pitchfork.Down.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down.x <= constants.origX+constants.PITCHFORK_SPEED/2) or 
 			(pitchfork.Down2.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down2.x <= constants.origX+constants.PITCHFORK_SPEED/2)) then
-			currentScore = math.min(999, currentScore + 1)
-			setScore(currentScore, numbers.ones, numbers.tens, numbers.hundreds)
+			_G.currentScore = math.min(999, _G.currentScore + 1)
+			setScore(_G.currentScore, numbers.ones, numbers.tens, numbers.hundreds)
 			audio.play( sounds.coinSound )
 		end
 
@@ -192,14 +192,14 @@ function scene:enterScene( event )
 				gameOver = false
 				resetPitchforks(pitchfork.Up, pitchfork.Down, constants.screenW)
 				resetPitchforks(pitchfork.Up2, pitchfork.Down2, pitchfork.Down.x)
-				currentScore = 0
-				setScore(currentScore, numbers.ones, numbers.tens, numbers.hundreds)
+				_G.currentScore = 0
+				setScore(_G.currentScore, numbers.ones, numbers.tens, numbers.hundreds)
 				pigstuff.deadPig.isVisible = false
 				pigstuff.pig.isVisible = true
 				scoreboard.scoreGroup.anchorChildren = false
 				scoreboard.scoreGroup.y = 0
 				scoreboard.scoreGroup.x = 0
-				scoreboard.scoreboard.isVisible = false
+				scoreboard.scoreBoard.isVisible = false
 				scoreboard.highscoreGroup.isVisible = false
 				medals.isVisible = false
 				scoreboard.playButton.isVisible = false
@@ -267,28 +267,28 @@ function scene:enterScene( event )
 					scoreboard.shareButton.isVisible = true
 					-- check for high score, set it if high #420
 					local highScore = score.getScore()
-					if currentScore > highScore then
-						score.writeScore(currentScore)
-						highScore = currentScore
-						scoreboard.scoreboard:setFrame( 2 )
+					if _G.currentScore > highScore then
+						score.writeScore(_G.currentScore)
+						highScore = _G.currentScore
+						scoreboard.scoreBoard:setFrame( 2 )
 					else
-						scoreboard.scoreboard:setFrame( 1 )
+						scoreboard.scoreBoard:setFrame( 1 )
 					end
 
 					-- show the scoreboard and current score
-					scoreboard.scoreboard.isVisible = true
+					scoreboard.scoreBoard.isVisible = true
 					scoreboard.scoreGroup.anchorX = 0
 					scoreboard.scoreGroup.anchorY = 0
 					scoreboard.scoreGroup.anchorChildren = true
 					scoreboard.scoreGroup.y = constants.screenH/2 - 37 - numbers.ones.y
 					scoreboard.scoreGroup.x = 60
-					if currentScore >= 100 and hundredsDigit ~= 1 then
+					if _G.currentScore >= 100 and hundredsDigit ~= 1 then
 						scoreboard.scoreGroup.x = scoreboard.scoreGroup.x + 2
 					end
-					if currentScore < 100 then
+					if _G.currentScore < 100 then
 						scoreboard.scoreGroup.x = scoreboard.scoreGroup.x - constants.NUMBER_WIDTH
 					end
-					if currentScore < 10 then
+					if _G.currentScore < 10 then
 						scoreboard.scoreGroup.x = scoreboard.scoreGroup.x - constants.NUMBER_WIDTH
 					end
 
@@ -308,7 +308,7 @@ function scene:enterScene( event )
 					end
 
 					-- show the correct medal based on score
-					medals:setFrame(math.min(5, math.max(1, math.ceil(currentScore/10))))
+					medals:setFrame(math.min(5, math.max(1, math.ceil(_G.currentScore/10))))
 					medals.isVisible = true
 
 					scoreboard.playButton:addEventListener( "touch", screenTouchListener )

@@ -31,7 +31,7 @@ playButton.isVisible = false
 local shareButton = display.newImage( "assets/btnShare.png", 235, 380 )
 shareButton.isVisible = false
 
-S.scoreboard = scoreboard
+S.scoreBoard = scoreboard
 S.scoreGroup = scoreGroup
 S.highscoreGroup = highscoreGroup
 S.playButton = playButton

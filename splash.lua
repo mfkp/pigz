@@ -34,7 +34,7 @@ function scene:createScene( event )
 		storyboard.gotoScene( "view1", options )
 	end
 
-	timer.performWithDelay( 2500, goToIntro, 1 )
+	timer.performWithDelay( 2000, goToIntro)
 
 	-- logo
 	local logo = display.newImage( "assets/logo.png", screenW/2, screenH/2 )
