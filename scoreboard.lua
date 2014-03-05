@@ -25,8 +25,16 @@ highscoreGroup:insert( numbers.highOnes )
 highscoreGroup:insert( numbers.highTens )
 highscoreGroup:insert( numbers.highHundreds )
 
+-- restart & share buttons
+local playButton = display.newImage( "assets/btnPlay.png", 85, 380 )
+playButton.isVisible = false
+local shareButton = display.newImage( "assets/btnShare.png", 235, 380 )
+shareButton.isVisible = false
+
 S.scoreboard = scoreboard
 S.scoreGroup = scoreGroup
 S.highscoreGroup = highscoreGroup
+S.playButton = playButton
+S.shareButton = shareButton
 
 return S

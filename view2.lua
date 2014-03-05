@@ -29,14 +29,9 @@ physics.addBody( pitchfork.Up, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pitchfork.Down2, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pitchfork.Up2, "static", { friction=1, bounce=0.6 } )
 physics.addBody( pigstuff.pigGroup, "dynamic", { radius=20, density=1.0, friction=1, bounce=0.4 } )
+physics.addBody( static.grass, "static", { friction=0.5, bounce=0.3 } )
 
 local currentScore = 0
-
--- restart & share buttons
-local playButton = display.newImage( "assets/btnPlay.png", 85, 380 )
-playButton.isVisible = false
-local shareButton = display.newImage( "assets/btnShare.png", 235, 380 )
-shareButton.isVisible = false
 
 local currentTheme = themes.Themes.Day
 
@@ -68,8 +63,13 @@ function scene:createScene( event )
 	group:insert( pitchfork.Down2 )
 	group:insert( static.grass )
 	group:insert( static.tapToFly )
-
-	physics.addBody( static.grass, "static", { friction=0.5, bounce=0.3 } )
+	group:insert( pigstuff.pigGroup )
+	group:insert( scoreboard.scoreboard )
+	group:insert( scoreboard.scoreGroup )
+	group:insert( scoreboard.highscoreGroup )
+	group:insert( medals )
+	group:insert( scoreboard.playButton )
+	group:insert( scoreboard.shareButton )
 end
 
 -- Called immediately after scene has moved onscreen:
@@ -202,8 +202,8 @@ function scene:enterScene( event )
 				scoreboard.scoreboard.isVisible = false
 				scoreboard.highscoreGroup.isVisible = false
 				medals.isVisible = false
-				playButton.isVisible = false
-				shareButton.isVisible = false
+				scoreboard.playButton.isVisible = false
+				scoreboard.shareButton.isVisible = false
 				storyboard.gotoScene( "view2" )
 				static.tapToFly.isVisible = true
 				pigstuff.pig:pause()
@@ -255,7 +255,7 @@ function scene:enterScene( event )
 					audio.play( sounds.oinkSound )
 				end
 				
-				-- swap out live pigstuff.pig for dead pigstuff.pig
+				-- swap out live pig for dead pig
 				pigstuff.deadPig.isVisible = true
 				pigstuff.pig.isVisible = false
 
@@ -263,8 +263,8 @@ function scene:enterScene( event )
 
 				local function showScoreboard ()
 					-- show the share/play buttons
-					playButton.isVisible = true
-					shareButton.isVisible = true
+					scoreboard.playButton.isVisible = true
+					scoreboard.shareButton.isVisible = true
 					-- check for high score, set it if high #420
 					local highScore = score.getScore()
 					if currentScore > highScore then
@@ -292,8 +292,6 @@ function scene:enterScene( event )
 						scoreboard.scoreGroup.x = scoreboard.scoreGroup.x - constants.NUMBER_WIDTH
 					end
 
-					
-
 					-- show the high score
 					setScore(highScore, numbers.highOnes, numbers.highTens, numbers.highHundreds)
 					scoreboard.highscoreGroup.y = constants.screenH/2 + 5
@@ -313,7 +311,7 @@ function scene:enterScene( event )
 					medals:setFrame(math.min(5, math.max(1, math.ceil(currentScore/10))))
 					medals.isVisible = true
 
-					playButton:addEventListener( "touch", screenTouchListener )
+					scoreboard.playButton:addEventListener( "touch", screenTouchListener )
 				end
 
 				timer.performWithDelay( 1000, showScoreboard )
