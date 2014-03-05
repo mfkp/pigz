@@ -12,6 +12,7 @@ local constants = require( "constants" )
 local pitchfork = require( "pitchfork" )
 local sounds = require( "sounds" )
 local physics = require( "physics" )
+local numbers = require( "numbers" )
 physics.setScale( 90 )
 -- physics.setDrawMode( "hybrid" )
 physics.start()
@@ -51,23 +52,8 @@ local stars1, stars2, stars3
 
 
 
--- numbers sprite
-local options = { frames = require("numbers").frames, sheetContentWidth=250, sheetContentHeight=26 }
-local numbersSheet = graphics.newImageSheet( "assets/numbers.png", options )
-local spriteOptions = { name="numbers", start=1, count=10, time=1000 }
-local ones = display.newSprite( numbersSheet, spriteOptions )
-local tens = display.newSprite( numbersSheet, spriteOptions )
-local hundreds = display.newSprite( numbersSheet, spriteOptions )
-hundreds.anchorX, hundreds.anchorY, tens.anchorX, tens.anchorY, ones.anchorX, ones.anchorY = 0, 0, 0, 0, 0, 0
-tens.isVisible = false
-hundreds.isVisible = false
-ones.y, tens.y, hundreds.y = 20, 20, 20
-local onesPos = constants.screenW/2 - constants.NUMBER_WIDTH*1 + constants.NUMBER_WIDTH/2
-local tensPos = constants.screenW/2 - constants.NUMBER_WIDTH*2 + constants.NUMBER_WIDTH/2
-local hundredsPos =  constants.screenW/2 - constants.NUMBER_WIDTH*3 + constants.NUMBER_WIDTH/2
-hundreds.x = hundredsPos
-tens.x = tensPos
-ones.x = onesPos
+
+
 
 -- scoreboard
 local scoreboardOptions = { frames = require("scoreboard").frames, sheetContentWidth=460, sheetContentHeight=171 }
@@ -77,32 +63,21 @@ local scoreboard = display.newSprite( scoreboardSheet, scoreboardSpriteOptions )
 scoreboard.x, scoreboard.y = constants.screenW/2, constants.screenH/2 - 40
 scoreboard.isVisible = false
 
--- high score numbers sprite
-local highOnes = display.newSprite( numbersSheet, spriteOptions )
-local highTens = display.newSprite( numbersSheet, spriteOptions )
-local highHundreds = display.newSprite( numbersSheet, spriteOptions )
-highHundreds.anchorX, highHundreds.anchorY, highTens.anchorX, highTens.anchorY, highOnes.anchorX, highOnes.anchorY = 0, 0, 0, 0, 0, 0
-highOnes.isVisible = false
-highTens.isVisible = false
-highHundreds.isVisible = false
--- local highHeight = constants.screenH/2 + 37
-highOnes.y, highTens.y, highHundreds.y = ones.y, tens.y, hundreds.y
--- local highWidth = constants.screenW/2 - 60
-highHundreds.x, highTens.x, highOnes.x = ones.x, tens.x, hundreds.x
+
 
 -- score group
 local scoreGroup = display.newGroup()
-scoreGroup:insert( ones )
-scoreGroup:insert( tens )
-scoreGroup:insert( hundreds )
+scoreGroup:insert( numbers.ones )
+scoreGroup:insert( numbers.tens )
+scoreGroup:insert( numbers.hundreds )
 
 local highscoreGroup = display.newGroup()
 highscoreGroup.anchorX = 0
 highscoreGroup.anchorY = 0
 highscoreGroup.anchorChildren = true
-highscoreGroup:insert( highOnes )
-highscoreGroup:insert( highTens )
-highscoreGroup:insert( highHundreds )
+highscoreGroup:insert( numbers.highOnes )
+highscoreGroup:insert( numbers.highTens )
+highscoreGroup:insert( numbers.highHundreds )
 
 -- medals sprite
 local medalsOptions = {
@@ -275,14 +250,14 @@ function scene:enterScene( event )
 		tens.isVisible = (score >= 10)
 		hundreds.isVisible = (score >= 100)
 		-- set positioning
-		ones.x = 		onesPos + 
+		ones.x = 		numbers.onesPos + 
 						((score >= 10) and constants.NUMBER_WIDTH/2 or 0) + 
 						((score >= 100) and constants.NUMBER_WIDTH/2 or 0)
-		tens.x = 		tensPos + 
+		tens.x = 		numbers.tensPos + 
 						((tensDigit == 1) and constants.ONE_OFFSET or 0) + 
 						((score >= 10) and constants.NUMBER_WIDTH/2 or 0) + 
 						((score >= 100) and constants.NUMBER_WIDTH/2 or 0)
-		hundreds.x = 	hundredsPos + 
+		hundreds.x = 	numbers.hundredsPos + 
 						((hundredsDigit == 1) and constants.ONE_OFFSET or 0) + 
 						((tensDigit == 1) and constants.ONE_OFFSET or 0) + 
 						((score >= 10) and constants.NUMBER_WIDTH/2 or 0) + 
@@ -311,7 +286,7 @@ function scene:enterScene( event )
 		if ((pitchfork.Down.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down.x <= constants.origX+constants.PITCHFORK_SPEED/2) or 
 			(pitchfork.Down2.x > constants.origX-constants.PITCHFORK_SPEED/2 and pitchfork.Down2.x <= constants.origX+constants.PITCHFORK_SPEED/2)) then
 			currentScore = math.min(999, currentScore + 1)
-			setScore(currentScore, ones, tens, hundreds)
+			setScore(currentScore, numbers.ones, numbers.tens, numbers.hundreds)
 			audio.play( sounds.coinSound )
 		end
 
@@ -362,7 +337,7 @@ function scene:enterScene( event )
 				resetPitchforks(pitchfork.Up, pitchfork.Down, constants.screenW)
 				resetPitchforks(pitchfork.Up2, pitchfork.Down2, pitchfork.Down.x)
 				currentScore = 0
-				setScore(currentScore, ones, tens, hundreds)
+				setScore(currentScore, numbers.ones, numbers.tens, numbers.hundreds)
 				deadPig.isVisible = false
 				pig.isVisible = true
 				scoreGroup.anchorChildren = false
@@ -449,7 +424,7 @@ function scene:enterScene( event )
 					scoreGroup.anchorX = 0
 					scoreGroup.anchorY = 0
 					scoreGroup.anchorChildren = true
-					scoreGroup.y = constants.screenH/2 - 37 - ones.y
+					scoreGroup.y = constants.screenH/2 - 37 - numbers.ones.y
 					scoreGroup.x = 60
 					if currentScore >= 100 and hundredsDigit ~= 1 then
 						scoreGroup.x = scoreGroup.x + 2
@@ -464,7 +439,7 @@ function scene:enterScene( event )
 					
 
 					-- show the high score
-					setScore(highScore, highOnes, highTens, highHundreds)
+					setScore(highScore, numbers.highOnes, numbers.highTens, numbers.highHundreds)
 					highscoreGroup.y = constants.screenH/2 + 5
 					highscoreGroup.x = 60
 					highscoreGroup.isVisible = true
