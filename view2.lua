@@ -7,20 +7,13 @@
 local storyboard = require( "storyboard" )
 local scene = storyboard.newScene()
 local themes = require( "themes" )
+local score = require( "score" )
+local constants = require( "constants" )
 local physics = require( "physics" )
 physics.setScale( 90 )
 -- physics.setDrawMode( "hybrid" )
 physics.start()
 physics.setGravity( 0, 15 )
-
-local isAndroid = system.getInfo( "platformName" ) == "Android"
-
-local PIG_UPWARD_VELOCITY = -400
-local ROTATION_RATIO = PIG_UPWARD_VELOCITY / -20
-local FENCE_SPEED = 1
-local CLOUD_SPEED = 0.3
-local PITCHFORK_SPEED = 3
-local ONE_OFFSET = 10 -- pixels offset for the "one" number
 
 local currentScore = 0
 
@@ -93,7 +86,6 @@ local fence1, fence2, fence3, clouds1, clouds2, clouds3
 local stars1, stars2, stars3
 
 local flapSound = audio.loadSound( "assets/sounds/flap.mp3" )
--- local boingSound = audio.loadSound( "assets/sounds/boing.mp3" )
 local oinkSound = audio.loadSound( "assets/sounds/oink.mp3" )
 local coinSound = audio.loadSound( "assets/sounds/coin.mp3" )
 
@@ -108,10 +100,9 @@ hundreds.anchorX, hundreds.anchorY, tens.anchorX, tens.anchorY, ones.anchorX, on
 tens.isVisible = false
 hundreds.isVisible = false
 ones.y, tens.y, hundreds.y = 20, 20, 20
-local NUMBER_WIDTH = 26
-local onesPos = screenW/2 - NUMBER_WIDTH*1 + NUMBER_WIDTH/2
-local tensPos = screenW/2 - NUMBER_WIDTH*2 + NUMBER_WIDTH/2
-local hundredsPos =  screenW/2 - NUMBER_WIDTH*3 + NUMBER_WIDTH/2
+local onesPos = screenW/2 - constants.NUMBER_WIDTH*1 + constants.NUMBER_WIDTH/2
+local tensPos = screenW/2 - constants.NUMBER_WIDTH*2 + constants.NUMBER_WIDTH/2
+local hundredsPos =  screenW/2 - constants.NUMBER_WIDTH*3 + constants.NUMBER_WIDTH/2
 hundreds.x = hundredsPos
 tens.x = tensPos
 ones.x = onesPos
@@ -184,39 +175,6 @@ local tapToFly = display.newSprite( tapToFlySheet, tapToFlySpriteOptions )
 tapToFly.x = screenW/2
 tapToFly.y = screenH*2/3
 tapToFly:play()
-
-local function writeScore(score)
-	local path = system.pathForFile( "highscore.txt", system.DocumentsDirectory )
-	local file = io.open (path, "w" )
-	if ( file ) then
-		local contents = score
-		file:write( contents )
-		io.close( file )
-		file = nil
-		return true
-	else
-		print( "Error: could not read file" )
-		return false
-	end
-end
-
-local function getScore()
-	local path = system.pathForFile( "highscore.txt", system.DocumentsDirectory )
-	local file = io.open( path, "r" )
-	if ( file ) then
-		-- read all contents of file into a string
-		local contents = file:read( "*a" )
-		local score = tonumber( contents );
-		io.close( file )
-		file = nil
-		return score
-	else
-		print( "Error: could not read scores from file." )
-		writeScore( currentScore )
-		return 0
-	end
-	return nil
-end
 
 local bg, grass
 local currentTheme = themes.Themes.Day
@@ -356,17 +314,17 @@ function scene:enterScene( event )
 		hundreds.isVisible = (score >= 100)
 		-- set positioning
 		ones.x = 		onesPos + 
-						((score >= 10) and NUMBER_WIDTH/2 or 0) + 
-						((score >= 100) and NUMBER_WIDTH/2 or 0)
+						((score >= 10) and constants.NUMBER_WIDTH/2 or 0) + 
+						((score >= 100) and constants.NUMBER_WIDTH/2 or 0)
 		tens.x = 		tensPos + 
-						((tensDigit == 1) and ONE_OFFSET or 0) + 
-						((score >= 10) and NUMBER_WIDTH/2 or 0) + 
-						((score >= 100) and NUMBER_WIDTH/2 or 0)
+						((tensDigit == 1) and constants.ONE_OFFSET or 0) + 
+						((score >= 10) and constants.NUMBER_WIDTH/2 or 0) + 
+						((score >= 100) and constants.NUMBER_WIDTH/2 or 0)
 		hundreds.x = 	hundredsPos + 
-						((hundredsDigit == 1) and ONE_OFFSET or 0) + 
-						((tensDigit == 1) and ONE_OFFSET or 0) + 
-						((score >= 10) and NUMBER_WIDTH/2 or 0) + 
-						((score >= 100) and NUMBER_WIDTH/2 or 0)
+						((hundredsDigit == 1) and constants.ONE_OFFSET or 0) + 
+						((tensDigit == 1) and constants.ONE_OFFSET or 0) + 
+						((score >= 10) and constants.NUMBER_WIDTH/2 or 0) + 
+						((score >= 100) and constants.NUMBER_WIDTH/2 or 0)
 	end
 
 	local function moveThePig()
@@ -375,59 +333,59 @@ function scene:enterScene( event )
 		end
 
 		-- move pitchforks
-		pitchforkDown.x = pitchforkDown.x - PITCHFORK_SPEED
+		pitchforkDown.x = pitchforkDown.x - constants.PITCHFORK_SPEED
 		pitchforkUp.x = pitchforkDown.x
 		if ( pitchforkDown.x < 0 - pitchforkDown.contentWidth ) then
 			resetPitchforks(pitchforkUp, pitchforkDown, pitchforkDown2.x)
 		end
 
-		pitchforkDown2.x = pitchforkDown2.x - PITCHFORK_SPEED
+		pitchforkDown2.x = pitchforkDown2.x - constants.PITCHFORK_SPEED
 		pitchforkUp2.x = pitchforkDown2.x
 		if ( pitchforkDown2.x < 0 - pitchforkDown2.contentWidth ) then
 			resetPitchforks(pitchforkUp2, pitchforkDown2, pitchforkDown.x)
 		end
 
 		-- check for +1 score
-		if ((pitchforkDown.x > origX-PITCHFORK_SPEED/2 and pitchforkDown.x <= origX+PITCHFORK_SPEED/2) or 
-			(pitchforkDown2.x > origX-PITCHFORK_SPEED/2 and pitchforkDown2.x <= origX+PITCHFORK_SPEED/2)) then
+		if ((pitchforkDown.x > origX-constants.PITCHFORK_SPEED/2 and pitchforkDown.x <= origX+constants.PITCHFORK_SPEED/2) or 
+			(pitchforkDown2.x > origX-constants.PITCHFORK_SPEED/2 and pitchforkDown2.x <= origX+constants.PITCHFORK_SPEED/2)) then
 			currentScore = math.min(999, currentScore + 1)
 			setScore(currentScore, ones, tens, hundreds)
 			audio.play( coinSound )
 		end
 
 		-- move fence
-		fence1.x = fence1.x - FENCE_SPEED
+		fence1.x = fence1.x - constants.FENCE_SPEED
 		if ( fence1.x <= -fence1.width ) then
 			fence1.x = fence1.width*2
 		end
-		fence2.x = fence2.x - FENCE_SPEED
+		fence2.x = fence2.x - constants.FENCE_SPEED
 		if ( fence2.x <= -fence1.width ) then
 			fence2.x = fence2.width*2
 		end
-		fence3.x = fence3.x - FENCE_SPEED
+		fence3.x = fence3.x - constants.FENCE_SPEED
 		if ( fence3.x <= -fence1.width ) then
 			fence3.x = fence3.width*2
 		end
 
 		-- move clouds
-		clouds1.x = clouds1.x - CLOUD_SPEED
+		clouds1.x = clouds1.x - constants.CLOUD_SPEED
 		if ( clouds1.x <= -clouds1.width ) then
 			clouds1.x = screenW
 			clouds1.y = math.random( 50, 250 )
 		end
-		clouds2.x = clouds2.x - CLOUD_SPEED*2
+		clouds2.x = clouds2.x - constants.CLOUD_SPEED*2
 		if ( clouds2.x <= -clouds2.width ) then
 			clouds2.x = screenW
 			clouds2.y = math.random( 50, 250 )
 		end
-		clouds3.x = clouds3.x - CLOUD_SPEED*3
+		clouds3.x = clouds3.x - constants.CLOUD_SPEED*3
 		if ( clouds3.x <= -clouds3.width ) then
 			clouds3.x = screenW
 			clouds2.y = math.random( 50, 250 )
 		end
 
 		local vx, vy = pigGroup:getLinearVelocity()
-		pigGroup.rotation = math.min( vy / ROTATION_RATIO - 10, 90 )
+		pigGroup.rotation = math.min( vy / constants.ROTATION_RATIO - 10, 90 )
 
 		if (pigGroup.y < 0) then
 			pigGroup.y = 0
@@ -472,7 +430,7 @@ function scene:enterScene( event )
 			end
 
 			if started then
-				if isAndroid then
+				if constants.isAndroid then
 					media.playSound( 'assets/sounds/flap.mp3' )
 				else
 					audio.play( flapSound )
@@ -484,7 +442,7 @@ function scene:enterScene( event )
 				tapToFly.isVisible = false
 			end
 
-			pigGroup:setLinearVelocity( 0, PIG_UPWARD_VELOCITY )
+			pigGroup:setLinearVelocity( 0, constants.PIG_UPWARD_VELOCITY )
 			
 		end
 		return true  --prevents touch propagation to underlying objects
@@ -498,7 +456,7 @@ function scene:enterScene( event )
 				gameOver = true
 				started = false
 
-				if isAndroid then
+				if constants.isAndroid then
 					media.playSound( 'assets/sounds/oink.mp3' )
 				else
 					audio.play( oinkSound )
@@ -515,9 +473,9 @@ function scene:enterScene( event )
 					playButton.isVisible = true
 					shareButton.isVisible = true
 					-- check for high score, set it if high #420
-					local highScore = getScore()
+					local highScore = score.getScore()
 					if currentScore > highScore then
-						writeScore(currentScore)
+						score.writeScore(currentScore)
 						highScore = currentScore
 						scoreboard:setFrame( 2 )
 					else
@@ -535,10 +493,10 @@ function scene:enterScene( event )
 						scoreGroup.x = scoreGroup.x + 2
 					end
 					if currentScore < 100 then
-						scoreGroup.x = scoreGroup.x - NUMBER_WIDTH
+						scoreGroup.x = scoreGroup.x - constants.NUMBER_WIDTH
 					end
 					if currentScore < 10 then
-						scoreGroup.x = scoreGroup.x - NUMBER_WIDTH
+						scoreGroup.x = scoreGroup.x - constants.NUMBER_WIDTH
 					end
 
 					
@@ -552,10 +510,10 @@ function scene:enterScene( event )
 						highscoreGroup.x = highscoreGroup.x + 2
 					end
 					if highScore < 100 then
-						highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH
+						highscoreGroup.x = highscoreGroup.x - constants.NUMBER_WIDTH
 					end
 					if highScore < 10 then
-						highscoreGroup.x = highscoreGroup.x - NUMBER_WIDTH
+						highscoreGroup.x = highscoreGroup.x - constants.NUMBER_WIDTH
 					end
 
 					-- show the correct medal based on score
