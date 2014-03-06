@@ -245,6 +245,9 @@ function scene:enterScene( event )
 
 	local function onPigCollision( self, event )
 		if ( event.phase == "began" ) then
+
+			-- game over!
+			Runtime:removeEventListener( "enterFrame", moveThePig )
 			
 			if not gameOver then
 
@@ -319,9 +322,6 @@ function scene:enterScene( event )
 
 				timer.performWithDelay( 1000, showScoreboard )
 			end
-
-			-- game over!
-			Runtime:removeEventListener( "enterFrame", moveThePig )
 
 		end
 	end
