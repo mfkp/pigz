@@ -206,6 +206,8 @@ function scene:enterScene( event )
 				scoreboard.rateButton.isVisible = false
 				storyboard.gotoScene( "view2" )
 				static.tapToFly.isVisible = true
+				pigstuff.pigGroup:setLinearVelocity( 0, 0 )
+				pigstuff.pigGroup.angularVelocity = 0
 				pigstuff.pigGroup.rotation = 0
 				pigstuff.pig:pause()
 				pigstuff.pig:setFrame( 4 )
