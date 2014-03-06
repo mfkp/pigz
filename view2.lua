@@ -311,6 +311,7 @@ function scene:enterScene( event )
 					medals:setFrame(math.min(5, math.max(1, math.ceil(_G.currentScore/10))))
 					medals.isVisible = true
 
+					scoreboard.playButton._functionListeners = nil
 					scoreboard.playButton:addEventListener( "touch", screenTouchListener )
 				end
 
