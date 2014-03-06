@@ -206,9 +206,9 @@ function scene:enterScene( event )
 				scoreboard.rateButton.isVisible = false
 				storyboard.gotoScene( "view2" )
 				static.tapToFly.isVisible = true
+				pigstuff.pigGroup.rotation = 0
 				pigstuff.pig:pause()
 				pigstuff.pig:setFrame( 4 )
-				pigstuff.pigGroup.rotation = 0
 				-- pick random theme
 				local newTheme = themes.themeNames[ math.random( #themes.themeNames ) ]
 				currentTheme = themes.Themes[ newTheme ]
