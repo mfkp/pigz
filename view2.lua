@@ -208,7 +208,7 @@ function scene:enterScene( event )
 				static.tapToFly.isVisible = true
 				pigstuff.pig:pause()
 				pigstuff.pig:setFrame( 4 )
-				pigstuff.pigGroup.rotation = -1
+				pigstuff.pigGroup.rotation = 0
 				-- pick random theme
 				local newTheme = themes.themeNames[ math.random( #themes.themeNames ) ]
 				currentTheme = themes.Themes[ newTheme ]
