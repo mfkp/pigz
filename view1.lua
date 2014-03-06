@@ -30,7 +30,7 @@ function scene:createScene( event )
 
 	local gradient = display.newImage( "assets/spashGradient.png", screenW/2, screenH/2 )
 
-	local fence = display.newImage( "assets/splashFence.png", screenW/2, 423 )
+	local fence = display.newImage( "assets/splashFence.png", screenW/2, 424 )
 
 	local clouds = display.newImage( "assets/clouds.png", screenW/2, 100 )
 
