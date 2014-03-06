@@ -2,6 +2,9 @@ local S = {}
 
 local constants = require( "constants" )
 local numbers = require( "numbers" )
+local rateit = require( "rateit" )
+rateit.setiTunesURL( "com.vibramedia.pigz" )
+rateit.setAndroidURL( "com.vibramedia.pigz" )
 
 local scoreboardOptions = { frames = require("scoreboardFrames").frames, sheetContentWidth=460, sheetContentHeight=171 }
 local scoreboardSheet = graphics.newImageSheet( "assets/scoreboard.png", scoreboardOptions )
@@ -28,13 +31,18 @@ highscoreGroup:insert( numbers.highHundreds )
 -- restart & share buttons
 local playButton = display.newImage( "assets/btnPlay.png", 85, 380 )
 playButton.isVisible = false
-local shareButton = display.newImage( "assets/btnShare.png", 235, 380 )
-shareButton.isVisible = false
+local rateButton = display.newImage( "assets/btnRateBig.png", 235, 380 )
+rateButton.isVisible = false
+
+local function rateApp ( event )
+	rateit.openURL()
+end
+rateButton:addEventListener( "touch", rateApp )
 
 S.scoreBoard = scoreboard
 S.scoreGroup = scoreGroup
 S.highscoreGroup = highscoreGroup
 S.playButton = playButton
-S.shareButton = shareButton
+S.rateButton = rateButton
 
 return S

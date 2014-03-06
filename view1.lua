@@ -6,9 +6,9 @@
 -- 
 
 local storyboard = require( "storyboard" )
-local rateit = require("rateit")
-rateit.setiTunesURL("com.vibramedia.pigz")
-rateit.setAndroidURL("com.vibramedia.pigz")
+local rateit = require( "rateit" )
+rateit.setiTunesURL( "com.vibramedia.pigz" )
+rateit.setAndroidURL( "com.vibramedia.pigz" )
 local scene = storyboard.newScene()
 
 -- Called when the scene's view does not exist:

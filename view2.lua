@@ -69,7 +69,7 @@ function scene:createScene( event )
 	group:insert( scoreboard.highscoreGroup )
 	group:insert( medals )
 	group:insert( scoreboard.playButton )
-	group:insert( scoreboard.shareButton )
+	group:insert( scoreboard.rateButton )
 end
 
 -- Called immediately after scene has moved onscreen:
@@ -203,7 +203,7 @@ function scene:enterScene( event )
 				scoreboard.highscoreGroup.isVisible = false
 				medals.isVisible = false
 				scoreboard.playButton.isVisible = false
-				scoreboard.shareButton.isVisible = false
+				scoreboard.rateButton.isVisible = false
 				storyboard.gotoScene( "view2" )
 				static.tapToFly.isVisible = true
 				pigstuff.pig:pause()
@@ -264,7 +264,7 @@ function scene:enterScene( event )
 				local function showScoreboard ()
 					-- show the share/play buttons
 					scoreboard.playButton.isVisible = true
-					scoreboard.shareButton.isVisible = true
+					scoreboard.rateButton.isVisible = true
 					-- check for high score, set it if high #420
 					local highScore = score.getScore()
 					if _G.currentScore > highScore then
