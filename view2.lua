@@ -224,17 +224,17 @@ function scene:enterScene( event )
 				return true
 			end
 
-			if started then
-				if constants.isAndroid then
-					media.playSound( sounds.flapPath )
-				else
-					audio.play( sounds.flapSound )
-				end
-			else
+			if not started then
 				started = true
 				physics.start()
 				pigstuff.pig:play()
 				static.tapToFly.isVisible = false
+			end
+
+			if constants.isAndroid then
+				media.playSound( sounds.flapPath )
+			else
+				audio.play( sounds.flapSound )
 			end
 
 			pigstuff.pigGroup:setLinearVelocity( 0, constants.PIG_UPWARD_VELOCITY )
