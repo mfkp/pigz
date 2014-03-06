@@ -21,9 +21,9 @@ function scene:createScene( event )
 	local g = graphics.newGradient({ 0, 142/255, 1 }, { 0, 1, 1 }, "up" )
 	bg:setFillColor( g )
 
-	local gradient = display.newImage( "assets/spashGradient.png", screenW/2, screenH/2 )
+	local clouds = display.newImage( "assets/splashClouds.png", screenW/2, screenH/2 )
 
-	local clouds = display.newImage( "assets/clouds.png", screenW/2, 100 )
+	local gradient = display.newImage( "assets/spashGradient.png", screenW/2, screenH/2 )
 
 	local function goToIntro( event )
 		local options =
