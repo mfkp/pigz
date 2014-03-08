@@ -229,6 +229,7 @@ function scene:enterScene( event )
 				physics.start()
 				pigstuff.pig:play()
 				static.tapToFly.isVisible = false
+				Runtime:addEventListener( "enterFrame", moveThePig )
 			end
 
 			if constants.isAndroid then
@@ -254,6 +255,8 @@ function scene:enterScene( event )
 				gameOver = true
 				started = false
 
+				screenButton:removeEventListener( "touch", screenTouchListener )
+
 				if constants.isAndroid then
 					media.playSound( sounds.oinkPath )
 				else
@@ -263,8 +266,6 @@ function scene:enterScene( event )
 				-- swap out live pig for dead pig
 				pigstuff.deadPig.isVisible = true
 				pigstuff.pig.isVisible = false
-
-				screenButton:removeEventListener( "touch", screenTouchListener )
 
 				local function showScoreboard ()
 					-- show the share/play buttons
@@ -331,10 +332,8 @@ function scene:enterScene( event )
 
 	pigstuff.pigGroup.x = constants.origX
 	pigstuff.pigGroup.y = constants.origY
-	Runtime:addEventListener( "enterFrame", moveThePig )
-
-	screenButton:addEventListener( "touch", screenTouchListener )
 	
+	screenButton:addEventListener( "touch", screenTouchListener )
 end
 
 -- Called when scene is about to move offscreen:
