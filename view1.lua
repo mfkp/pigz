@@ -7,7 +7,7 @@
 
 local storyboard = require( "storyboard" )
 local rateit = require( "rateit" )
-rateit.setiTunesURL( "com.vibramedia.pigz" )
+rateit.setiTunesURL( "835674244" )
 rateit.setAndroidURL( "com.vibramedia.pigz" )
 local scene = storyboard.newScene()
 

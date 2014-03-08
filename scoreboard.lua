@@ -3,7 +3,7 @@ local S = {}
 local constants = require( "constants" )
 local numbers = require( "numbers" )
 local rateit = require( "rateit" )
-rateit.setiTunesURL( "com.vibramedia.pigz" )
+rateit.setiTunesURL( "835674244" )
 rateit.setAndroidURL( "com.vibramedia.pigz" )
 
 local scoreboardOptions = { frames = require("scoreboardFrames").frames, sheetContentWidth=460, sheetContentHeight=171 }
